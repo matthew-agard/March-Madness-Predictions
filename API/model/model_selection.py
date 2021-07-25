@@ -70,7 +70,6 @@ def init_logreg():
     lr = LogisticRegression()
     lr_params = {
         'C': [10**i for i in range(-5, 6)],
-        'max_iter': [500],
         'random_state': [42],
     }
 

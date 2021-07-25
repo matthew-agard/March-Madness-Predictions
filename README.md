@@ -5,7 +5,7 @@ There's nothing quite like the most riveting basketball event of the year: NCAA 
 Perhaps what contributes most to the intrigue of March Madness is filling out a March Madness bracket. "The American Gaming Association estimated in 2019 that 40 million Americans filled out a combined 149 million brackets for a collective wager of \$4.6 billion." It's important to note that even a single bet can be quite lucrative, particularly when an upset occurs (when a lower-ranking underdog beats a higher-ranking favorite). For example, the first-ever upset of a #1 seed by a #16 seed occurred in the 2019 NCAA tournament. In that game "a \$100 bet paid out \$2,500", which translates to American betting odds of +2500!
 
 All quotations were cited from the following article:
-<br>https://www.gobankingrates.com/money/business/money-behind-march-madness-ncaa-basketball-tournament/
+https://www.gobankingrates.com/money/business/money-behind-march-madness-ncaa-basketball-tournament/
 
 # Problem Structure
 
@@ -19,14 +19,17 @@ The purpose of this personal project is to perform supervised classification on 
 ...also in the works...
 
 # TODO
--Complete 'Post-Tournament Model Evaluation' notebook section<br>
--Rewrite web scraper for fetching historical March Madness data<br>
--Implement probability estimation for LogReg model predictions<br>
--Impute nulls based on target variable class' distribution, not entire dataset's distribution<br>
--Monte Carlo simulation for bracket_pipeline() using different X_train fits<br>
--Consider 'AP Rank' feature on sportsreference for current year's Top 25 list<br>
--Feature additions: conference, conference W-L%<br>
--Experiment with neural networks and gradient-boosted trees (develop for March Madness 2022 and beyond)<br>
--start_bracket_from_round() functionality; could be used to overwrite predictions and recreate bracket from there<br>
--Productionize model to the cloud (AWS, GCP, Azure)<br>
--Flesh out README "Setup" section
+- Complete 'Post-Tournament Model Evaluation' notebook section
+    - Rewrite web scraper for fetching historical March Madness data
+- Implement probability estimation for LogReg model predictions
+- Impute nulls based on target variable class' distribution, not entire dataset's distribution
+- Monte Carlo simulation for bracket_pipeline() using different X_train fits
+- Consider 'AP Rank' feature on sportsreference for current year's Top 25 list
+- Feature Additions:
+    - Conference
+    - Conference W-L%
+    - sportsreference.com 'AP Rank' (for current year's Top 25 list)
+- Experiment with neural networks and gradient-boosted trees (develop for March Madness 2022 and beyond)
+- start_bracket_from_round() functionality; could be used to overwrite predictions and recreate bracket from there
+- Productionize model to the cloud (AWS, GCP, Azure)
+- Flesh out README "Setup" section

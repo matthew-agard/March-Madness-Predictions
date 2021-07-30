@@ -229,13 +229,11 @@ def feature_pipeline(primary_df, fit_df):
     return full_feature_df
 
 
-def round_pipeline(year, curr_round, all_curr_matchups, clean_curr_season_data, fit_df, null_drops):
+def round_pipeline(curr_round, all_curr_matchups, clean_curr_season_data, fit_df, null_drops):
     """Generate a round to be used for in the creation of an entire bracket
 
     Parameters
     ----------
-    year : int
-        Current calendar year
     curr_round : int
         Tournament/Bracket round
     all_curr_matchups : list
@@ -316,7 +314,7 @@ def bracket_pipeline(year, play_in, first_round, model, fit_df, null_drops):
 
     for curr_round in range(7):
         # Get all data needed for current generated/selected round    
-        all_round_data, curr_X, school_matchups_df = round_pipeline(year, curr_round, all_curr_matchups, 
+        all_round_data, curr_X, school_matchups_df = round_pipeline(curr_round, all_curr_matchups, 
                                                                     clean_curr_season_data, fit_df, null_drops)
         # Create predictions
         school_matchups_df['Underdog_Upset'] = model.predict(curr_X)

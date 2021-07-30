@@ -2,7 +2,7 @@
 
 This script stores lists and dictionaries used in the data_fetch, data_clean, and feature_engineering scripts.
 
-No functions are present, and no libraries or modules are required in your environment.
+No functions are present, and no libraries or modules are required.
 """
 
 season_team_to_coach_team_dict = {
@@ -47,15 +47,10 @@ season_team_to_coach_team_dict = {
  }
 
 curr_season_to_tourney_dict = {
-     # 'Brigham Young': 'BYU',
-     # 'Louisiana State': 'LSU',
      'Loyola (IL)': 'Loyola Chicago',
      'Norfolk State': 'Norfolk St',
-     # 'Connecticut': 'UConn',
      'UCSB': 'UC Santa Barbara',
-     # 'North Carolina-Greensboro': 'UNC Greensboro',
-     # 'Southern California': 'USC',
-     # 'Virginia Commonwealth': 'VCU',
+     'UNC': 'North Carolina',
 }
 
 rounds_str_to_numeric = {

@@ -84,12 +84,8 @@ def clean_coach_stats(coach_df):
     coach_df : DataFrame
         Cleaned coach data for March Madness teams
     """
-    # # Change team names accordingly to ensure successful merging with team stats
-    # coach_df['Coach_Team'].replace(coach_to_season_dict, inplace=True)
-
     # Fill null values with '0' placeholder
     coach_df.iloc[:, 1:] = coach_df.iloc[:, 1:].replace('', '0')
-
     return coach_df
 
 

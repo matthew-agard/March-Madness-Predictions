@@ -19,7 +19,7 @@ and 'feature_engineering' helper modules, being present in your environment to r
 
 import pandas as pd
 from datetime import datetime
-from data_integrity import coach_to_season_dict, hist_season_to_tourney_dict, curr_season_to_tourney_dict
+from data_integrity import curr_season_to_tourney_dict
 from feature_engineering import totals_to_game_average, create_faves_underdogs, bidirectional_rounds_str_numeric, create_target_variable
 
 current_year = datetime.now().year
@@ -84,8 +84,8 @@ def clean_coach_stats(coach_df):
     coach_df : DataFrame
         Cleaned coach data for March Madness teams
     """
-    # Change team names accordingly to ensure successful merging with team stats
-    coach_df['Coach_Team'].replace(coach_to_season_dict, inplace=True)
+    # # Change team names accordingly to ensure successful merging with team stats
+    # coach_df['Coach_Team'].replace(coach_to_season_dict, inplace=True)
 
     # Fill null values with '0' placeholder
     coach_df.iloc[:, 1:] = coach_df.iloc[:, 1:].replace('', '0')
@@ -111,10 +111,8 @@ def clean_merged_season_stats(year, all_season_df, season_basic_df):
         Cleaned regular season dataset, ready for merging with tournament matchup data
     """
     # Change team names accordingly to ensure successful merging with tournament matchups
-    all_season_df['School'].replace(
-        hist_season_to_tourney_dict if (year != current_year) else curr_season_to_tourney_dict, 
-        inplace=True
-    )
+    if (year == current_year):
+        all_season_df['School'].replace(curr_season_to_tourney_dict, inplace=True)
 
     # Convert team regular season stats from season totals to per game averages
     totals_to_game_average(all_season_df, season_basic_df)
@@ -122,13 +120,11 @@ def clean_merged_season_stats(year, all_season_df, season_basic_df):
     return all_season_df
 
 
-def clean_tourney_data(year, mm_df, season_df):
+def clean_tourney_data( mm_df, season_df):
     """Clean tournament matchups data
 
     Parameters
     ----------
-    year : int
-        Calendar year
     mm_df : DataFrame
         Freshly scraped tournament matchup data
     season_df : DataFrame

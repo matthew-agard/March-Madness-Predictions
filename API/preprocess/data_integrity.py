@@ -5,71 +5,22 @@ This script stores lists and dictionaries used in the data_fetch, data_clean, an
 No functions are present, and no libraries or modules are required in your environment.
 """
 
-coach_to_season_dict = {
-     'BYU': 'Brigham Young',
-     'Long Beach State': 'Cal State Long Beach',
-     'Central Connecticut': 'Central Connecticut State',
-     'UCF': 'Central Florida',
-     'UConn': 'Connecticut',
-     'Detroit': 'Detroit Mercy',
-     'ETSU': 'East Tennessee State',
-     'UIC': 'Illinois-Chicago',
-     'LIU': 'Long Island University',
-     'LSU': 'Louisiana State',
-     'UMBC': 'Maryland-Baltimore County',
-     'UMass': 'Massachusetts',
-     'UMass-Lowell': 'Massachusetts-Lowell',
-     'Ole Miss': 'Mississippi',
-     'UMKC': 'Missouri-Kansas City',
-     'UNLV': 'Nevada-Las Vegas',
-     'UNC': 'North Carolina',
-     'NC State': 'North Carolina State',
-     'UNC Asheville': 'North Carolina-Asheville',
-     'UNC Greensboro': 'North Carolina-Greensboro',
-     'UNC Wilmington': 'North Carolina-Wilmington',
-     'Penn': 'Pennsylvania',
-     'Pitt': 'Pittsburgh',
-     'SIU-Edwardsville': 'SIU Edwardsville',
-     "St. Joseph's": "Saint Joseph's",
-     "Saint Mary's": "Saint Mary's (CA)",
-     "St. Peter's": "Saint Peter's",
-     'USC Upstate': 'South Carolina Upstate',
-     'USC': 'Southern California',
-     'SMU': 'Southern Methodist',
-     'Southern Miss': 'Southern Mississippi',
-     'UT-Martin': 'Tennessee-Martin',
-     'TCU': 'Texas Christian',
-     'UTEP': 'Texas-El Paso',
-     'UTSA': 'Texas-San Antonio',
-     'UCSB': 'UC-Santa Barbara',
-     'California': 'University of California',
-     'VCU': 'Virginia Commonwealth',
-}
-
-hist_season_to_tourney_dict = {
-     'Albany (N.Y.)': 'Albany (NY)',
-     'Arkansas-Little Rock': 'Little Rock',
+season_team_to_coach_team_dict = {
      'Brigham Young': 'BYU',
      'Cal State Long Beach': 'Long Beach State',
-     'Cal-Poly': 'Cal Poly',
      'Central Connecticut State': 'Central Connecticut',
      'Central Florida': 'UCF',
      'Connecticut': 'UConn',
      'Detroit Mercy': 'Detroit',
      'East Tennessee State': 'ETSU',
      'Illinois-Chicago': 'UIC',
-     'Long Island': 'LIU',
-     'Louisiana-Lafayette': 'Louisiana',
+     'Long Island University': 'LIU',
      'Louisiana State': 'LSU',
-     'Loyola (Ill.)': 'Loyola (IL)',
-     'Loyola (Md.)': 'Loyola (MD)',
      'Maryland-Baltimore County': 'UMBC',
      'Massachusetts': 'UMass',
-     'Miami (Fla.)': 'Miami (FL)',
-     'Miami (Ohio)': 'Miami (OH)',
-     'Middle Tennessee State': 'Middle Tennessee',
+     'Massachusetts-Lowell': 'UMass-Lowell',
      'Mississippi': 'Ole Miss',
-     'Murray St.': 'Murray State',
+     'Missouri-Kansas City': 'UMKC',
      'Nevada-Las Vegas': 'UNLV',
      'North Carolina': 'UNC',
      'North Carolina State': 'NC State',
@@ -78,34 +29,33 @@ hist_season_to_tourney_dict = {
      'North Carolina-Wilmington': 'UNC Wilmington',
      'Pennsylvania': 'Penn',
      'Pittsburgh': 'Pitt',
-     'Southern California': 'USC',
-     'Southern Methodist': 'SMU',
-     'Southern Mississippi': 'Southern Miss',
+     'SIU Edwardsville': 'SIU-Edwardsville',
      "Saint Joseph's": "St. Joseph's",
      "Saint Mary's (CA)": "Saint Mary's",
      "Saint Peter's": "St. Peter's",
-     "St. John's": "St. John's (NY)",
-     'St. Louis': 'Saint Louis',
+     'South Carolina Upstate': 'USC Upstate',
+     'Southern California': 'USC',
+     'Southern Methodist': 'SMU',
+     'Southern Mississippi': 'Southern Miss',
+     'Tennessee-Martin': 'UT-Martin',
      'Texas Christian': 'TCU',
      'Texas-El Paso': 'UTEP',
      'Texas-San Antonio': 'UTSA',
-     'UC Davis': 'UC-Davis',
-     'UC Irvine': 'UC-Irvine',
      'UC-Santa Barbara': 'UCSB',
      'University of California': 'California',
      'Virginia Commonwealth': 'VCU',
  }
 
 curr_season_to_tourney_dict = {
-     'Brigham Young': 'BYU',
-     'Louisiana State': 'LSU',
+     # 'Brigham Young': 'BYU',
+     # 'Louisiana State': 'LSU',
      'Loyola (IL)': 'Loyola Chicago',
      'Norfolk State': 'Norfolk St',
-     'Connecticut': 'UConn',
-     'UC-Santa Barbara': 'UC Santa Barbara',
-     'North Carolina-Greensboro': 'UNC Greensboro',
-     'Southern California': 'USC',
-     'Virginia Commonwealth': 'VCU',
+     # 'Connecticut': 'UConn',
+     'UCSB': 'UC Santa Barbara',
+     # 'North Carolina-Greensboro': 'UNC Greensboro',
+     # 'Southern California': 'USC',
+     # 'Virginia Commonwealth': 'VCU',
 }
 
 rounds_str_to_numeric = {
@@ -118,12 +68,34 @@ rounds_str_to_numeric = {
      'National Championship': 6,
 }
 
-rounds_numeric_to_str = {
-     0:'Play-In',
-     1:'First Round',
-     2:'Second Round',
-     3:'Sweet Sixteen',
-     4:'Elite Eight',
-     5:'Final Four',
-     6:'National Championship',
-}
+rounds_numeric_to_str = {value:key for (key, value) in rounds_str_to_numeric.items()}
+
+# from data_clean import clean_merged_season_stats
+# from data_pipeline import all_team_season_data
+
+# def team_name_integrity_check(start_year, curr_year):
+#      hist_stats_df, hist_coach_df = pd.DataFrame(), pd.DataFrame()
+
+#      for year in range(start_year, curr_year):
+#           bracket = getch.get_hist_bracket(url=f'https://www.sports-reference.com/cbb/postseason/{year}-ncaa.html', year=year)
+#           hist_brackets_df = pd.concat([hist_brackets_df, bracket], ignore_index=True)
+          
+#           coaches = fetch.get_coach_data(url=f"https://www.sports-reference.com/cbb/seasons/{year}-coaches.html")
+#           hist_coach_df = pd.concat([hist_coach_df, coaches], ignore_index=True)
+          
+#           all_curr_season_data, curr_season_basic_df = all_team_season_data(year)
+#           stats = clean_merged_season_stats(year, all_curr_season_data, curr_season_basic_df)
+#           hist_stats_df = pd.concat([hist_stats_df, stats], ignore_index=True)
+
+#      school_stats_set = set(hist_stats_df['School'])
+#      school_coach_set = set(hist_coach_df['Coach_Team'])
+
+#      stat_coach_teams_diff_pre = school_stats_set.difference(school_coach_set)
+
+#      hist_stats_df['School'].replace(season_team_to_coach_team_dict, inplace=True)
+#      school_stats_set = set(hist_stats_df['School'])
+
+#      stat_coach_teams_diff_post = school_stats_set.difference(school_coach_set)
+
+#      true_diff = stat_coach_teams_diff_post.difference(stat_coach_teams_diff_pre)
+#      return true_diff

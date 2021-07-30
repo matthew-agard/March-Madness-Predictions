@@ -160,7 +160,7 @@ def hist_tournament_games(year, all_stats, basic_stats):
     
     # Clean & merge regular season data to tournament games (if they exist for given year)
     if not mm_games_df.empty:
-        clean_mm_df = clean_tourney_data(year, mm_games_df, clean_all_season_stats_df)
+        clean_mm_df = clean_tourney_data(mm_games_df, clean_all_season_stats_df)
         mm_data_df = merge_clean_tourney_games(clean_mm_df, clean_all_season_stats_df)
     else:
         mm_data_df = pd.DataFrame()
@@ -266,7 +266,7 @@ def round_pipeline(year, curr_round, all_curr_matchups, clean_curr_season_data, 
     generated_round[['Seed', 'Seed.1']] = generated_round[['Seed', 'Seed.1']].astype(int)
 
     # Cleaned tournament matchup dataset
-    cleaned_generated_round = clean_tourney_data(year, generated_round, clean_curr_season_data)
+    cleaned_generated_round = clean_tourney_data(generated_round, clean_curr_season_data)
 
     # Merge all team season data to teams in matchups
     all_round_data = merge_clean_tourney_games(cleaned_generated_round, clean_curr_season_data)

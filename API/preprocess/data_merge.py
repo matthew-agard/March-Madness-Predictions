@@ -11,6 +11,7 @@ Requires a minimum of the 'pandas' library being present in your environment to 
 """
 
 import pandas as pd
+from data_integrity import season_team_to_coach_team_dict
 
 
 def merge_clean_team_stats(basic_df, adv_df):
@@ -75,6 +76,9 @@ def merge_clean_coaches(stats_rankings_df, coaches_df):
     all_season_stats_df : DataFrame
         Newly-merged DataFrame of a teams' regular season stats, regular season ranking, and coach performance
     """
+    # Change team names accordingly to ensure successful merging with team stats
+    stats_rankings_df['School'].replace(season_team_to_coach_team_dict, inplace=True)
+
     # Merge on the school name
     all_season_stats_df = pd.merge(stats_rankings_df, coaches_df,
                                     left_on='School', right_on='Coach_Team').drop('Coach_Team', axis=1)

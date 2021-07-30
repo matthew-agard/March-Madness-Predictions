@@ -18,9 +18,11 @@ Requires a minimum of the 'pandas' library, as well as the 'data_fetch', 'data_c
 """
 
 import pandas as pd
-# from sys import path
-# path.append('../fetch')
-from data_fetch import get_team_data, get_rankings_data, get_coach_data
+
+from sys import path
+path.append('../fetch')
+from data_fetch import get_team_data, get_rankings_data, get_coach_data, get_hist_bracket
+
 from data_clean import clean_basic_stats, clean_adv_stats, clean_coach_stats, clean_merged_season_stats, clean_tourney_data, clean_curr_round_data, fill_playin_teams, clean_bracket
 from data_merge import merge_clean_team_stats, merge_clean_rankings, merge_clean_coaches, merge_clean_tourney_games
 from feature_engineering import team_points_differentials, bidirectional_rounds_str_numeric, matchups_to_underdog_relative, scale_features, create_bracket_round, create_bracket_winners
@@ -154,11 +156,7 @@ def hist_tournament_games(year, all_stats, basic_stats):
     clean_all_season_stats_df = clean_merged_season_stats(year, all_stats, basic_stats)
     
     # Fetch tournament game data
-    mm_games_df = get_team_data(url=("https://apps.washingtonpost.com/sports/search/?pri_school_id=&pri_conference=&pri_coach"
-                                "=&pri_seed_from=1&pri_seed_to=16&pri_power_conference=&pri_bid_type=&opp_school_id"
-                                "=&opp_conference=&opp_coach=&opp_seed_from=1&opp_seed_to=16&opp_power_conference"
-                                f"=&opp_bid_type=&game_type=7&from={year}&to={year}&submit="), 
-                                attrs={'class': 'search-results'}, header=0)
+    mm_games_df = get_hist_bracket(url=f'https://www.sports-reference.com/cbb/postseason/{year}-ncaa.html', year=year)
     
     # Clean & merge regular season data to tournament games (if they exist for given year)
     if not mm_games_df.empty:

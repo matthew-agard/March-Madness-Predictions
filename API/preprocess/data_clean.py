@@ -139,10 +139,6 @@ def clean_tourney_data(year, mm_df, season_df):
     mm_df : DataFrame
         Cleaned tournament matchup dataset, ready for merging with regular season stats data
     """
-    # Properly format all names to ensure successful merging with regular season stats
-    if year != current_year:
-        for col in ['Round', 'Team', 'Team.1']:
-            mm_df[col] = mm_df[col].apply(lambda name: name[:-(len(name) // 2)].strip())
 
     # Transform team listings into favorite-underdog matchups (using seeds & regular season record)
     faves_unds = create_faves_underdogs(mm_df, season_df)
@@ -155,7 +151,7 @@ def clean_tourney_data(year, mm_df, season_df):
                 mm_df[mm_df_struct[j] + "_" + key] = faves_unds[key][:, j]
             except IndexError:
                 continue
-    # Create target variable (for training dataset only, otherwise KeyError is thrown)
+    # Create target variable (based on historical dataset scores, otherwise KeyError is thrown)
     try:
         mm_df['Underdog_Upset'] = create_target_variable(mm_df)
     except KeyError:

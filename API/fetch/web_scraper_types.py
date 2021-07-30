@@ -37,7 +37,7 @@ def pandas_web_scrape(url, attrs, header):
     return arr
 
 
-def bs4_web_scrape(url, attrs):
+def bs4_web_scrape(url):
     """BeautifulSoup table web scraper
 
     Parameters
@@ -49,18 +49,14 @@ def bs4_web_scrape(url, attrs):
 
     Returns
     -------
-    rows : list
-        Collection of all webpage data points (by row)
+    soup : BeautifulSoup
+        Raw webpage HTML
     """
     # Configure scraper
     page = requests.get(url)
     soup = BeautifulSoup(page.text, "html.parser")
 
-    # Find table and get its data
-    table = soup.find("table", attrs=attrs)
-    rows = table.find_all("tr")
-
-    return rows
+    return soup
 
 
 def bracket_web_scrape(url, attrs):

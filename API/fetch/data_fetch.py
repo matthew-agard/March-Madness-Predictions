@@ -11,12 +11,13 @@ The following functions are present:
     * get_feature_null_counts
     * get_current_bracket
 
-Requires a minimum of the 'pandas' and 're' libraries, as well as the 
-'web_scraper_types' helper module, being present in your environment to run.
+Requires a minimum of the 'pandas' and 're' libraries, as well as the 'web_scraper_types',
+'data_merge' and 'data_integrity' helper modules, being present in your environment to run.
 """
 
 import pandas as pd
 import re
+from merge_fetch import playin_regions_list, merge_raw_tourney_games
 from web_scraper_types import bs4_web_scrape, pandas_web_scrape, bracket_web_scrape
 
 
@@ -60,12 +61,16 @@ def get_rankings_data(url):
     rankings_df : DataFrame
         Curated data points read into a DataFrame
     """
-    # Fetch raw data and prepare DataFrame
-    raw_html = bs4_web_scrape(url, attrs={"id": "ratings"})
+    # Fetch raw HTML and scrape its data
+    raw_html = bs4_web_scrape(url)
+    table = raw_html.find("table", attrs={"id": "ratings"})
+    rows = table.find_all("tr")
+
+    # Prepare DataFrame
     rankings_df = pd.DataFrame(columns=['Team', 'Top_25'])
 
     # Iterate over raw data to extract team and rank HTML elements
-    for i, rank in enumerate(raw_html):
+    for i, rank in enumerate(rows):
         if rank.find('a'):
             team = rank.find('a')
             # Identify Top 25 teams using ternary operator to produce binary output
@@ -87,12 +92,16 @@ def get_coach_data(url):
     coaches_df : DataFrame
         Curated data points read into a DataFrame
     """
-    # Fetch raw data and prepare DataFrame
-    raw_html = bs4_web_scrape(url, attrs={"id": "coaches"})
+    # Fetch raw HTML and scrape its data
+    raw_html = bs4_web_scrape(url)
+    table = raw_html.find("table", attrs={"id": "coaches"})
+    rows = table.find_all("tr")
+
+    # Prepare DataFrame
     coaches_df = pd.DataFrame(columns=['Coach_Team', 'MM', 'S16', 'F4', 'Champs'])
 
     # Iterate over raw data to extract coach tournament appearances HTML elements
-    for i, row in enumerate(raw_html):
+    for i, row in enumerate(rows):
         if(row.find('a')):
             coach_team = row.find_all('a')[1]
             mm_apps = row.find("td", attrs={"data-stat": "ncaa_car"})
@@ -139,6 +148,94 @@ def get_feature_null_counts(df):
     """
     nulls = df.isnull().sum().sort_values(ascending=False)
     return nulls[nulls > 0]
+
+
+def get_playin_matchups(url, year):
+    # Fetch raw HTML
+    raw_html = bs4_web_scrape(url)
+
+    # Used for iterating over all possible combinations of play-in regions
+    playin_regions = playin_regions_list
+    playin_classes = ['current', '']
+    
+    # Initialize data structures to store scraped data
+    seeds_list, teams_scores_list = [], []
+
+    for pi_class in playin_classes:
+        for i, playin_region in enumerate(playin_regions):
+            # Scrape all bracket data
+            bracket_raw = raw_html.find("div", attrs={'id': playin_region, 'class': pi_class})
+
+            try:
+                # Extract play-in matchups from bracket web scrape data
+                playin_raw = bracket_raw.find("p")
+                
+                # Get play-in teams' seeds
+                seeds_raw = playin_raw.find_all("strong")
+                seeds_list = seeds_list + [seed.text for seed in seeds_raw if ((seed.text).isdigit()) and (int(seed.text) <= 16)]
+
+                # Get play-in teams' names & game scores
+                teams_scores_raw = playin_raw.find_all("a")
+                teams_scores_list = teams_scores_list + [team_score.text for team_score in teams_scores_raw]
+            
+            # Catch the error from trying to scrape data from a non-existent HTML element
+            except AttributeError:
+                continue
+
+    # Initialize rounds_list accordingly
+    rounds_list = (['Play-In'] * (len(seeds_list) // 2))
+
+    # Merge all play-in games into a single DataFrame
+    playin_df = merge_raw_tourney_games(year, seeds_list, teams_scores_list, rounds_list)
+    return playin_df
+
+
+def get_tourney_matchups(url, year):
+    # Scrape tournament matchup data (excluding play-ins)
+    raw_html = bs4_web_scrape(url)
+    tourney_regions = raw_html.find_all("div", attrs={'id': 'bracket'})
+    
+    # Initialize DataFrame to store scraped data
+    tourney_df = pd.DataFrame()
+
+    # Iterate over all 4 tournament regions and Final Four
+    for i, tourney_region in enumerate(tourney_regions):
+        # Get all teams' seeds
+        seeds = tourney_region.find_all("span")
+        seeds_list = [data.text for data in seeds if ("at ") not in data.text][:-1]
+        
+        # Get all teams' names and scores
+        teams_scores = tourney_region.find_all("a")
+        teams_scores_list = [data.text for data in teams_scores if ("at ") not in data.text][:-1]
+        
+        # If the condition below is met, teams_scores_list must contain Final Four data
+        if len(teams_scores_list) == 12:
+            # Initialize rounds_list accordingly
+            rounds_list = (['Final Four'] * 2) + ['National Championship']
+        # If the condition below is met, teams_scores_list must contain regional data
+        else:
+            # We can expect len(teams_scores_list) == 60 when regional data is present.
+            # The only exception to this rule is 2021, where COVID caused the cancellation of 1 game.
+            if (year == 2021) and (len(teams_scores_list) != 60):
+                # Insert missing scores from COVID cancellation game
+                teams_scores_list.insert(25, "1")
+                teams_scores_list.insert(27, "0")
+            # Initialize rounds_list accordingly
+            rounds_list = (['First Round'] * 8) + (['Second Round'] * 4) + (['Sweet Sixteen'] * 2) + ['Elite Eight']
+
+        games_df = merge_raw_tourney_games(year, seeds_list, teams_scores_list, rounds_list)
+        # Concatenate all regional DataFrames into a single DataFrame
+        tourney_df = pd.concat([tourney_df, games_df], ignore_index=True)
+
+    return tourney_df
+
+
+def get_hist_bracket(url, year):
+    playin_df = get_playin_matchups(url, year)
+    tourney_df = get_tourney_matchups(url, year)
+
+    full_tourney_df = pd.concat([playin_df, tourney_df], ignore_index=True)
+    return full_tourney_df
 
 
 def get_current_bracket(url):

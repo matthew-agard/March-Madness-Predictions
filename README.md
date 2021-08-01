@@ -20,12 +20,11 @@ The purpose of this personal project is to perform supervised classification on 
 
 # TODO
 - Complete 'Post-Tournament Model Evaluation' notebook section
-    - Rewrite web scraper for fetching historical March Madness data
 - Revisit coach fetch drop_duplicates
 - Implement probability estimation for LogReg model predictions
+- Clean up API code & rewrite documentation (where necessary)
 - Impute nulls based on target variable class' distribution, not entire dataset's distribution
 - Monte Carlo simulation for bracket_pipeline() using different X_train fits
-- Consider 'AP Rank' feature on sportsreference for current year's Top 25 list
 - Feature Additions:
     - Conference
     - Conference W-L%

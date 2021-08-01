@@ -25,7 +25,7 @@ from data_fetch import get_team_data, get_rankings_data, get_coach_data, get_his
 
 from data_clean import clean_basic_stats, clean_adv_stats, clean_coach_stats, clean_merged_season_stats, clean_tourney_data, clean_curr_round_data, fill_playin_teams, clean_bracket
 from data_merge import merge_clean_team_stats, merge_clean_rankings, merge_clean_coaches, merge_clean_tourney_games
-from feature_engineering import team_points_differentials, bidirectional_rounds_str_numeric, matchups_to_underdog_relative, scale_features, create_bracket_round, create_bracket_winners
+from feature_engineering import totals_to_game_average, team_points_differentials, bidirectional_rounds_str_numeric, matchups_to_underdog_relative, scale_features, create_bracket_round, create_bracket_winners
 
 
 def regular_season_stats(year):
@@ -153,7 +153,7 @@ def hist_tournament_games(year, all_stats, basic_stats):
         Complete dataset for given year
     """
     # Reclean all team names & season stats (prior to merging of tournament games)
-    clean_all_season_stats_df = clean_merged_season_stats(year, all_stats, basic_stats)
+    clean_all_season_stats_df = clean_merged_season_stats(year, all_stats)
     
     # Fetch tournament game data
     mm_games_df = get_hist_bracket(url=f'https://www.sports-reference.com/cbb/postseason/{year}-ncaa.html', year=year)
@@ -196,14 +196,14 @@ def dataset_pipeline(years):
     return all_data_df
 
 
-def feature_pipeline(primary_df, fit_df):
+def feature_pipeline(primary_df, fit_df, basic_stats_cols):
     """Engineer features for complete dataset
 
     Parameters
     ----------
     primary_df : DataFrame
         Dataset to engineer; always used to transform StandardScaler()
-    trans_df : DataFrame
+    fit_df : DataFrame
         Dataset used to fit StandardScaler()
 
     Returns
@@ -217,6 +217,9 @@ def feature_pipeline(primary_df, fit_df):
     except KeyError:
         pass
 
+    # Convert team regular season stats from season totals to per game averages
+    totals_to_game_average(primary_df, basic_stats_cols)
+
     # Convert team points/game features into point differential features
     team_points_differentials(primary_df)
 
@@ -229,7 +232,7 @@ def feature_pipeline(primary_df, fit_df):
     return full_feature_df
 
 
-def round_pipeline(curr_round, all_curr_matchups, clean_curr_season_data, fit_df, null_drops):
+def round_pipeline(curr_round, all_curr_matchups, curr_season_basic_df, clean_curr_season_data, fit_df, null_drops):
     """Generate a round to be used for in the creation of an entire bracket
 
     Parameters
@@ -276,7 +279,7 @@ def round_pipeline(curr_round, all_curr_matchups, clean_curr_season_data, fit_df
 
     # Prepare DataFrame for prediction via feature pipeline preprocessing
     all_round_data.drop(teams + null_drops, axis=1, inplace=True)
-    curr_X = feature_pipeline(all_round_data, fit_df)
+    curr_X = feature_pipeline(all_round_data, fit_df, curr_season_basic_df.columns)
 
     return all_round_data, curr_X, school_matchups_df
 
@@ -306,7 +309,7 @@ def bracket_pipeline(year, play_in, first_round, model, fit_df, null_drops):
     """  
     # Get all team & coach season stats
     all_curr_season_data, curr_season_basic_df = all_team_season_data(year)
-    clean_curr_season_data = clean_merged_season_stats(year, all_curr_season_data, curr_season_basic_df)
+    clean_curr_season_data = clean_merged_season_stats(year, all_curr_season_data)
 
     # Initialize lists for use in generating/storing rounds
     all_curr_matchups = [play_in, first_round]
@@ -314,7 +317,7 @@ def bracket_pipeline(year, play_in, first_round, model, fit_df, null_drops):
 
     for curr_round in range(7):
         # Get all data needed for current generated/selected round    
-        all_round_data, curr_X, school_matchups_df = round_pipeline(curr_round, all_curr_matchups, 
+        all_round_data, curr_X, school_matchups_df = round_pipeline(curr_round, all_curr_matchups, curr_season_basic_df,
                                                                     clean_curr_season_data, fit_df, null_drops)
         # Create predictions
         school_matchups_df['Underdog_Upset'] = model.predict(curr_X)

@@ -20,7 +20,7 @@ and 'feature_engineering' helper modules, being present in your environment to r
 import pandas as pd
 from datetime import datetime
 from data_integrity import curr_season_to_tourney_dict
-from feature_engineering import totals_to_game_average, create_faves_underdogs, bidirectional_rounds_str_numeric, create_target_variable
+from feature_engineering import create_faves_underdogs, bidirectional_rounds_str_numeric, create_target_variable
 
 current_year = datetime.now().year
 
@@ -89,7 +89,7 @@ def clean_coach_stats(coach_df):
     return coach_df
 
 
-def clean_merged_season_stats(year, all_season_df, season_basic_df):
+def clean_merged_season_stats(year, all_season_df):
     """Clean fully merged dataset
 
     Parameters
@@ -98,25 +98,24 @@ def clean_merged_season_stats(year, all_season_df, season_basic_df):
         Calendar year
     all_season_df : DataFrame
         Complete regular season dataset (uncleaned)
-    season_basic_df : DataFrame
-        Cleaned basic regular season team stats (used for totals_to_game_average() function)
     
     Returns
     -------
     all_season_df : DataFrame
         Cleaned regular season dataset, ready for merging with tournament matchup data
     """
-    # Change team names accordingly to ensure successful merging with tournament matchups
+    # Convert all numeric datatypes to from str to float
+    for i in range(1, len(all_season_df.columns)):
+        all_season_df.iloc[:, i] = all_season_df.iloc[:, i].astype(float)
+
+    # Change team names when necessary to ensure successful merging with tournament matchups
     if (year == current_year):
         all_season_df['School'].replace(curr_season_to_tourney_dict, inplace=True)
-
-    # Convert team regular season stats from season totals to per game averages
-    totals_to_game_average(all_season_df, season_basic_df)
 
     return all_season_df
 
 
-def clean_tourney_data( mm_df, season_df):
+def clean_tourney_data(mm_df, season_df):
     """Clean tournament matchups data
 
     Parameters

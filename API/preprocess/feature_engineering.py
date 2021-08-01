@@ -23,26 +23,30 @@ from sklearn.preprocessing import StandardScaler
 from data_integrity import rounds_str_to_numeric, rounds_numeric_to_str
 
 
-def totals_to_game_average(all_season_df, season_basic_df):
-    """Convert team season stats totals into per game averages
+def totals_to_game_average(all_season_df, season_basic_cols):
+    """Convert team's basic season stats totals into per game averages
 
     Parameters
     ----------
     all_season_df : DataFrame
         Complete regular season dataset (uncleaned)
-    season_basic_df : DataFrame
-        Cleaned basic regular season team stats (only column names used here)
-    """
-    # Convert all numeric datatypes to from str to float
-    for i in range(1, len(all_season_df.columns)):
-        all_season_df.iloc[:, i] = all_season_df.iloc[:, i].astype(float)
+    season_basic_cols : list
+        Cleaned basic regular season stats columns
+    """   
     
-    # Convert all regular & advanced team stats from season totals to per game averages
-    for col in season_basic_df.columns:
-        if (col not in ['School', 'G', 'SOS']) and ('%' not in col):
-            all_season_df[col + "/Game"] = np.round(all_season_df[col] / all_season_df['G'], 1)
-            # Drop season total features
-            all_season_df.drop(col, axis=1, inplace=True)
+    # Perform engineering for both favorite & underdog teams
+    for team in ['Favorite', 'Underdog']:
+        # Iterate all over basic team stats columns
+        for col in season_basic_cols:
+            if (col not in ['School', 'G', 'SOS']) and ('%' not in col):
+                try:
+                    # Convert basic team stat from season total to per game average
+                    all_season_df[f'{col}/Game_{team}'] = np.round(all_season_df[f'{col}_{team}'] / all_season_df[f'G_{team}'], 1)
+                    # Drop season total feature
+                    all_season_df.drop(f'{col}_{team}', axis=1, inplace=True)
+                except KeyError:
+                    # Catch the error if the feature was already dropped during nulls decision making
+                    pass
 
 
 def create_faves_underdogs(mm_df, season_df):

@@ -135,7 +135,7 @@ def all_team_season_data(year):
     return all_season_stats_df, clean_season_basic_df
 
 
-def hist_tournament_games(year, all_stats, basic_stats):
+def hist_tournament_games(year, all_stats):
     """Fetch and clean all tournament data for a given year
 
     Parameters
@@ -144,8 +144,6 @@ def hist_tournament_games(year, all_stats, basic_stats):
         Calendar year
     all_stats : DataFrame
         Complete data for all regular season team and coach stats
-    basic_stats : DataFrame
-        Cleaned basic regular season stats for all teams in given year
 
     Returns
     -------
@@ -188,7 +186,7 @@ def dataset_pipeline(years):
         all_season_stats_df, clean_season_basic_df = all_team_season_data(year)
 
         # Merge tournament data to regular season data to create complete dataset for given year
-        year_mm_data_df = hist_tournament_games(year, all_season_stats_df, clean_season_basic_df)
+        year_mm_data_df = hist_tournament_games(year, all_season_stats_df)
 
         # Concatenate current year's data to DataFrame containing remainder of dataset
         all_data_df = pd.concat([all_data_df, year_mm_data_df], ignore_index=True)

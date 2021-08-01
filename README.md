@@ -19,9 +19,8 @@ The purpose of this personal project is to perform supervised classification on 
 ...also in the works...
 
 # TODO
-- Complete 'Post-Tournament Model Evaluation' notebook section
-- Revisit coach fetch drop_duplicates
-- Implement probability estimation for LogReg model predictions
+- Revisit coach fetch drop_duplicates (doesn't always select current coach)
+- Implement probability estimation & prediction threshold tuning for LogReg model predictions
 - Clean up API code & rewrite documentation (where necessary)
 - Impute nulls based on target variable class' distribution, not entire dataset's distribution
 - Monte Carlo simulation for bracket_pipeline() using different X_train fits

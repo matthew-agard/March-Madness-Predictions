@@ -6,6 +6,8 @@ The following functions are present:
     * totals_to_game_average
     * create_faves_underdogs
     * bidirectional_rounds_str_numeric
+    * conf_wl_pct
+    * encode_confs
     * matchups_to_underdog_relative
     * scale_features
     * create_bracket_round
@@ -134,7 +136,20 @@ def conf_wl_pct(df):
     for team in ['Favorite', 'Underdog']:
         df['Conf_W-L%_' + team] = df['Conf_W_' + team] / (df['Conf_W_' + team] + df['Conf_L_' + team])
         # Remove old points/game features to avoid linear dependency
-        df.drop(['Conf_W_' + team, 'Conf_L_' + team], axis=1, inplace=True)    
+        df.drop(['Conf_W_' + team, 'Conf_L_' + team], axis=1, inplace=True)
+
+
+def encode_confs(df):
+    """Convert categorical conference values to numeric values
+
+    Parameters
+    ----------
+    df : DataFrame
+        Fully merged and cleaned tournament data
+    """
+    for team in ['Favorite', 'Underdog']:
+        df['Conf_' + team] = df['Conf_' + team].astype('category')
+        df['Conf_' + team] = df['Conf_' + team].cat.codes.astype('float')
 
 
 def matchups_to_underdog_relative(df):
@@ -148,7 +163,7 @@ def matchups_to_underdog_relative(df):
     # Get set of all features that should be made relative
     team_stat_cols = set([col.replace('_Underdog', '').replace('_Favorite', '') for col in df.columns])
     # Exclude round, seed, and target variable from this process
-    team_stat_cols.difference_update(['Round', 'Seed', 'Underdog_Upset'])
+    team_stat_cols.difference_update(['Round', 'Seed', 'Conf', 'Underdog_Upset'])
 
     # Perform feature conversion
     for col in team_stat_cols:    
@@ -169,18 +184,22 @@ def scale_features(primary_df, fit_df):
 
     Returns
     -------
-    full_df : DataFrame
-        Fully merged and cleaned tournament data that has been scaled
+    full_rescale : DataFrame
+        Fully merged, cleaned, and scaled tournament data
     """
     # Import and fit StandardScaler object
     scaler = StandardScaler()
-    scaler.fit(fit_df)
+    fit_df_num = fit_df.drop(['Conf_Favorite', 'Conf_Underdog'], axis=1)
+    scaler.fit(fit_df_num)
 
     # Rescale data, then format it according to the structure of the primary DataFrame
-    rescale = scaler.transform(primary_df)
-    full_df = pd.DataFrame(rescale, index=primary_df.index, columns=primary_df.columns)
-    
-    return full_df
+    rescale_num = scaler.transform(primary_df.drop(['Conf_Favorite', 'Conf_Underdog'], axis=1))
+    primary_df_num = pd.DataFrame(rescale_num, index=primary_df.index, columns=fit_df_num.columns)
+
+    primary_df_cat = primary_df[['Conf_Favorite', 'Conf_Underdog']]
+
+    full_rescale = pd.concat([primary_df_num, primary_df_cat], axis=1)
+    return full_rescale
 
 
 def create_bracket_round(prev_round):

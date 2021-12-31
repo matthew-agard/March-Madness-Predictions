@@ -104,7 +104,7 @@ def init_rf():
     """
     rf = RandomForestClassifier()
     rf_params = {
-        'n_estimators': np.arange(50, 250),
+        'n_estimators': np.arange(10, 251, 5),
         'criterion': ['gini', 'entropy'],
         'min_samples_split': [2**i for i in range(1, 10)],
         'min_samples_leaf': [2**i for i in range(1, 10)],

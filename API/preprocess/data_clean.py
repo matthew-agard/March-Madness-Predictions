@@ -91,7 +91,7 @@ def clean_coach_stats(coach_df):
         Cleaned coach data for March Madness teams
     """
     # Fill null values with '0' placeholder
-    coach_df.iloc[:, 1:] = coach_df.iloc[:, 1:].replace('', '0')
+    coach_df.iloc[:, 1:-1] = coach_df.iloc[:, 1:-1].replace('', '0')
     return coach_df
 
 
@@ -112,7 +112,10 @@ def clean_merged_season_stats(year, all_season_df):
     """
     # Convert all numeric datatypes to from str to float
     for i in range(1, len(all_season_df.columns)):
-        all_season_df.iloc[:, i] = all_season_df.iloc[:, i].astype(float)
+        try:
+            all_season_df.iloc[:, i] = all_season_df.iloc[:, i].astype(float)
+        except ValueError:
+            pass
 
     # Change team names when necessary to ensure successful merging with tournament matchups
     if (year == current_year):

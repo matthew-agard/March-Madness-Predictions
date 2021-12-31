@@ -99,7 +99,7 @@ def get_coach_data(url):
     rows = table.find_all("tr")
 
     # Prepare DataFrame
-    coaches_df = pd.DataFrame(columns=['Coach_Team', 'Coach_Start', 'MM', 'S16', 'F4', 'Champs'])
+    coaches_df = pd.DataFrame(columns=['Coach_Team', 'Coach_Start', 'MM', 'S16', 'F4', 'Champs', 'Conf'])
 
     # Iterate over raw data to extract coach tournament appearances HTML elements
     for i, row in enumerate(rows):
@@ -110,9 +110,10 @@ def get_coach_data(url):
             sw16_apps = row.find("td", attrs={"data-stat": "sw16_car"})
             f4_apps = row.find("td", attrs={"data-stat": "ff_car"})
             champ_wins = row.find("td", attrs={"data-stat": "champ_car"})
+            conf = row.find("td", attrs={"data-stat": "conference"})
 
             coaches_df.loc[i] = [
-                coach_team.text, year_start.text, mm_apps.text, sw16_apps.text, f4_apps.text, champ_wins.text
+                coach_team.text, year_start.text, mm_apps.text, sw16_apps.text, f4_apps.text, champ_wins.text, conf.text
             ]
 
     coaches_df.sort_values(by=['Coach_Team', 'Coach_Start'], inplace=True)

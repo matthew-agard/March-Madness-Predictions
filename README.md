@@ -19,9 +19,10 @@ The purpose of this personal project is to perform supervised classification on 
 ...also in the works...
 
 # TODO
-- Revisit coach fetch drop_duplicates (doesn't always select current coach)
 - Implement probability estimation & prediction threshold tuning for LogReg model predictions
 - Impute nulls based on target variable class' distribution, not entire dataset's distribution
+- Fix "Compare Predictions to True Outcomes" section
+- Stratify train & test data on both target variable's & rounds' distributions
 - Feature Additions:
     - Conference
     - sportsreference.com 'AP Rank' (for current year's Top 25 list)

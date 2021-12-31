@@ -99,18 +99,24 @@ def get_coach_data(url):
     rows = table.find_all("tr")
 
     # Prepare DataFrame
-    coaches_df = pd.DataFrame(columns=['Coach_Team', 'MM', 'S16', 'F4', 'Champs'])
+    coaches_df = pd.DataFrame(columns=['Coach_Team', 'Coach_Start', 'MM', 'S16', 'F4', 'Champs'])
 
     # Iterate over raw data to extract coach tournament appearances HTML elements
     for i, row in enumerate(rows):
         if(row.find('a')):
             coach_team = row.find_all('a')[1]
+            year_start = row.find("td", attrs={"data-stat": "since"})
             mm_apps = row.find("td", attrs={"data-stat": "ncaa_car"})
             sw16_apps = row.find("td", attrs={"data-stat": "sw16_car"})
             f4_apps = row.find("td", attrs={"data-stat": "ff_car"})
             champ_wins = row.find("td", attrs={"data-stat": "champ_car"})
 
-            coaches_df.loc[i] = [coach_team.text, mm_apps.text, sw16_apps.text, f4_apps.text, champ_wins.text]
+            coaches_df.loc[i] = [
+                coach_team.text, year_start.text, mm_apps.text, sw16_apps.text, f4_apps.text, champ_wins.text
+            ]
+
+    coaches_df.sort_values(by=['Coach_Team', 'Coach_Start'], inplace=True)
+    coaches_df.drop('Coach_Start', axis=1, inplace=True)
 
     return coaches_df.drop_duplicates(subset='Coach_Team', keep='last')
 

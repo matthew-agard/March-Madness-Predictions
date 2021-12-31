@@ -24,7 +24,6 @@ The purpose of this personal project is to perform supervised classification on 
 - Impute nulls based on target variable class' distribution, not entire dataset's distribution
 - Feature Additions:
     - Conference
-    - Simple Rating System (SRS); understand calculation
     - sportsreference.com 'AP Rank' (for current year's Top 25 list)
 - Experiment with Monte Carlo simulation and bagging techniques for bracket_pipeline() using different X_train fits
 - Experiment with neural networks and gradient-boosted trees

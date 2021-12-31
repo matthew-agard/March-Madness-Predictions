@@ -19,13 +19,12 @@ The purpose of this personal project is to perform supervised classification on 
 ...also in the works...
 
 # TODO
-- Implement probability estimation & prediction threshold tuning for LogReg model predictions
 - Impute nulls based on target variable class' distribution, not entire dataset's distribution
 - Fix "Compare Predictions to True Outcomes" section
-- Stratify train & test data on both target variable's & rounds' distributions
+- Add EDA question for conference performance in the tournament
 - Feature Additions:
-    - Conference
     - sportsreference.com 'AP Rank' (for current year's Top 25 list)
+- Implement probability estimation & prediction threshold tuning for LogReg model predictions
 - Experiment with Monte Carlo simulation and bagging techniques for bracket_pipeline() using different X_train fits
 - Experiment with neural networks and gradient-boosted trees
 - start_bracket_from_round() functionality; could be used to overwrite predictions and recreate bracket from there

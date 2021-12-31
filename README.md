@@ -21,14 +21,13 @@ The purpose of this personal project is to perform supervised classification on 
 # TODO
 - Revisit coach fetch drop_duplicates (doesn't always select current coach)
 - Implement probability estimation & prediction threshold tuning for LogReg model predictions
-- Clean up API code & rewrite documentation (where necessary)
 - Impute nulls based on target variable class' distribution, not entire dataset's distribution
-- Monte Carlo simulation for bracket_pipeline() using different X_train fits
 - Feature Additions:
     - Conference
-    - Conference W-L%
+    - Simple Rating System (SRS); understand calculation
     - sportsreference.com 'AP Rank' (for current year's Top 25 list)
-- Experiment with neural networks and gradient-boosted trees (develop for March Madness 2022 and beyond)
+- Experiment with Monte Carlo simulation and bagging techniques for bracket_pipeline() using different X_train fits
+- Experiment with neural networks and gradient-boosted trees
 - start_bracket_from_round() functionality; could be used to overwrite predictions and recreate bracket from there
 - Productionize model to the cloud (AWS, GCP, Azure)
 - Flesh out README "Setup" section

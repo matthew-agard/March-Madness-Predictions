@@ -23,32 +23,6 @@ from sklearn.preprocessing import StandardScaler
 from data_integrity import rounds_str_to_numeric, rounds_numeric_to_str
 
 
-def totals_to_game_average(all_season_df, season_basic_cols):
-    """Convert team's basic season stats totals into per game averages
-
-    Parameters
-    ----------
-    all_season_df : DataFrame
-        Complete regular season dataset (uncleaned)
-    season_basic_cols : list
-        Cleaned basic regular season stats columns
-    """   
-    
-    # Perform engineering for both favorite & underdog teams
-    for team in ['Favorite', 'Underdog']:
-        # Iterate all over basic team stats columns
-        for col in season_basic_cols:
-            if (col not in ['School', 'G', 'SOS']) and ('%' not in col):
-                try:
-                    # Convert basic team stat from season total to per game average
-                    all_season_df[f'{col}/Game_{team}'] = np.round(all_season_df[f'{col}_{team}'] / all_season_df[f'G_{team}'], 1)
-                    # Drop season total feature
-                    all_season_df.drop(f'{col}_{team}', axis=1, inplace=True)
-                except KeyError:
-                    # Catch the error if the feature was already dropped during nulls decision making
-                    pass
-
-
 def create_faves_underdogs(mm_df, season_df):
     """Convert team listings into favorites-underdogs matchups
 
@@ -110,6 +84,45 @@ def create_faves_underdogs(mm_df, season_df):
     return faves_unds
 
 
+def bidirectional_rounds_str_numeric(df):
+    """Convert rounds to integers for modeling, then back to strings for EDA
+
+    Parameters
+    ----------
+    df : DataFrame
+        Fully merged and cleaned tournament data
+    """
+    # Determine which replacement dictionary to use based on datatype, then apply said replacements
+    rounds_replace = rounds_str_to_numeric if (df['Round'].dtype == object) else rounds_numeric_to_str
+    df['Round'].replace(rounds_replace, inplace=True)
+
+
+def totals_to_game_average(all_season_df, season_basic_cols):
+    """Convert team's basic season stats totals into per game averages
+
+    Parameters
+    ----------
+    all_season_df : DataFrame
+        Complete regular season dataset (uncleaned)
+    season_basic_cols : list
+        Cleaned basic regular season stats columns
+    """   
+    
+    # Perform engineering for both favorite & underdog teams
+    for team in ['Favorite', 'Underdog']:
+        # Iterate all over basic team stats columns
+        for col in season_basic_cols:
+            if (col not in ['School', 'G', 'SOS']) and ('%' not in col) and ('Conf' not in col):
+                try:
+                    # Convert basic team stat from season total to per game average
+                    all_season_df[f'{col}/Game_{team}'] = np.round(all_season_df[f'{col}_{team}'] / all_season_df[f'G_{team}'], 1)
+                    # Drop season total feature
+                    all_season_df.drop(f'{col}_{team}', axis=1, inplace=True)
+                except KeyError:
+                    # Catch the error if the feature was already dropped during nulls decision making
+                    pass
+
+
 def team_points_differentials(df):
     """Convert team points/game features into point differential feature
 
@@ -125,17 +138,11 @@ def team_points_differentials(df):
         df.drop(['Tm./Game_' + team, 'Opp./Game_' + team], axis=1, inplace=True)
 
 
-def bidirectional_rounds_str_numeric(df):
-    """Convert rounds to integers for modeling, then back to strings for EDA
-
-    Parameters
-    ----------
-    df : DataFrame
-        Fully merged and cleaned tournament data
-    """
-    # Determine which replacement dictionary to use based on datatype, then apply said replacements
-    rounds_replace = rounds_str_to_numeric if (df['Round'].dtype == object) else rounds_numeric_to_str
-    df['Round'].replace(rounds_replace, inplace=True)
+def conf_wl_pct(df):
+    for team in ['Favorite', 'Underdog']:
+        df['Conf_W-L%_' + team] = df['Conf_W_' + team] / (df['Conf_W_' + team] + df['Conf_L_' + team])
+        # Remove old points/game features to avoid linear dependency
+        df.drop(['Conf_W_' + team, 'Conf_L_' + team], axis=1, inplace=True)    
 
 
 def matchups_to_underdog_relative(df):

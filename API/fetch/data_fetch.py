@@ -9,6 +9,7 @@ The following functions are present:
     * get_coach_data
     * get_null_rows
     * get_feature_null_counts
+    * get_hist_bracket
     * get_current_bracket
 
 Requires a minimum of the 'pandas' and 're' libraries, as well as the 'web_scraper_types',

@@ -40,7 +40,7 @@ def clean_basic_stats(df):
     """
     # Remove fake, linearly dependent, and unwanted features
     fake_feats = ['Rk', 'MP'] + [col for col in df.columns if ('Unnamed' in col)]
-    lin_dep_feats = ['W', 'L', 'SRS', 'FGA', '3PA', 'FTA']
+    lin_dep_feats = ['W', 'L', 'SOS', 'Tm.', 'Opp.', 'FGA', '3PA', 'FTA']
     unwanted_feats = [col for col in df.columns if ('.2' in col) or ('.3' in col)]
 
     df.drop(fake_feats + lin_dep_feats + unwanted_feats, axis=1, inplace=True)

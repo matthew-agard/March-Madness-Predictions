@@ -138,7 +138,7 @@ def get_null_rows(null_fills, df):
         Cross-section of df; contains the rows where nulls reside for features in null_fills list
     """
     rows = df[df[null_fills].isnull().any(axis=1)]
-    return rows[['Year'] + null_fills]
+    return rows[['Year'] + null_fills + ['Underdog_Upset']]
 
 
 def get_feature_null_counts(df):

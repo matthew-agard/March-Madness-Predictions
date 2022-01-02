@@ -22,7 +22,8 @@ from datetime import datetime
 from data_integrity import curr_season_to_tourney_dict
 from feature_engineering import create_faves_underdogs, bidirectional_rounds_str_numeric, create_target_variable
 
-current_year = datetime.now().year
+# curr_year = datetime.now().year
+curr_year = 2021 # for beta testing
 
 
 def clean_basic_stats(df):
@@ -118,7 +119,7 @@ def clean_merged_season_stats(year, all_season_df):
             pass
 
     # Change team names when necessary to ensure successful merging with tournament matchups
-    if (year == current_year):
+    if (year == curr_year):
         all_season_df['School'].replace(curr_season_to_tourney_dict, inplace=True)
 
     return all_season_df

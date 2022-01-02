@@ -19,11 +19,13 @@ The purpose of this personal project is to perform supervised classification on 
 ...also in the works...
 
 # TODO
-- Impute nulls based on target variable class' distribution, not entire dataset's distribution
 - Fix "Compare Predictions to True Outcomes" section
 - Add EDA question for conference performance in the tournament
-- Feature Additions:
-    - sportsreference.com 'AP Rank' (for current year's Top 25 list)
+- Feature Tasks:
+    - Split SRS into OSRS & DSRS (Found on Ratings tab)
+    - Conference champion (Found on Conf. Tour. tab)
+    - 'AP Post' (for given year's Top 25 list; found on Coaches tab); also consider Polls tab
+    - Consider stepwise feature selection
 - Implement probability estimation & prediction threshold tuning for LogReg model predictions
 - Experiment with Monte Carlo simulation and bagging techniques for bracket_pipeline() using different X_train fits
 - Experiment with neural networks and gradient-boosted trees

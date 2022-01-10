@@ -26,9 +26,15 @@ The purpose of this personal project is to perform supervised classification on 
     - Conference champion (Found on Conf. Tour. tab)
     - 'AP Post' (for given year's Top 25 list; found on Coaches tab); also consider Polls tab
     - Consider stepwise feature selection
+- Models:
+    - Gradient-Boosted Tree
+    - Neural Network
+- Metrics
+    - Log Loss
+    - Hinge Loss
+    - Etc...
 - Implement probability estimation & prediction threshold tuning for LogReg model predictions
 - Experiment with Monte Carlo simulation and bagging techniques for bracket_pipeline() using different X_train fits
-- Experiment with neural networks and gradient-boosted trees
 - start_bracket_from_round() functionality; could be used to overwrite predictions and recreate bracket from there
 - Productionize model to the cloud (AWS, GCP, Azure)
 - Flesh out README "Setup" section

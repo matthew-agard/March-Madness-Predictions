@@ -48,7 +48,7 @@ def evaluate_cv_models(cv_models, X, y):
         if params[0] == 'Grid':
             model_cv = GridSearchCV(estimator=params[1], param_grid=params[2], cv=cross_vals, scoring=scoring, refit='AUC')
         else:
-            model_cv = RandomizedSearchCV(estimator=params[1], param_distributions=params[2], n_iter=100, 
+            model_cv = RandomizedSearchCV(estimator=params[1], param_distributions=params[2], n_iter=150, 
                                         cv=cross_vals, scoring=scoring, refit='AUC', random_state=42)
         # Fit data to model
         model_cv.fit(X, y)

@@ -15,27 +15,11 @@ in your environment to run.
 """
 
 import numpy as np
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
 from sklearn.ensemble import RandomForestClassifier
-
-
-def init_knn():
-    """Initialize KNN model
-
-    Returns
-    -------
-    list
-        Collection of model, its parameters, and what CV search to perform
-    """
-    knn = KNeighborsClassifier()
-    knn_params = {
-        'n_neighbors': np.arange(1, 101),
-    }
-
-    return ['Grid', knn, knn_params]
+from xgboost.sklearn import XGBClassifier
 
 
 def init_naive_bayes(y):
@@ -104,14 +88,31 @@ def init_rf():
     """
     rf = RandomForestClassifier()
     rf_params = {
-        'n_estimators': np.arange(10, 251, 5),
+        'n_estimators': np.arange(25, 226, 25),
         'criterion': ['gini', 'entropy'],
-        'min_samples_split': [2**i for i in range(1, 10)],
-        'min_samples_leaf': [2**i for i in range(1, 10)],
+        'min_samples_split': [2**i for i in range(1, 6)],
+        'min_samples_leaf': [2**i for i in range(1, 6)],
         'random_state': [42],
     }
 
     return ['Random', rf, rf_params]
+
+
+def init_xgboost():
+    xgb = XGBClassifier()
+    xgb_params = {
+        'n_estimators': np.arange(25, 226, 25),
+        'learning_rate': np.arange(0.05, 0.31, 0.05),
+        'subsample': np.arange(0.5, 1.1, 0.1),
+        'verbosity': [0],
+        'seed': [42],
+    }
+
+    # model_cv = XGB_CV(params=params[2], data_dmatrix=DMatrix(data=X, label=y), num_boost_round=50, 
+    # nfold=cross_vals, stratified=True, metrics=['auc', 'error'], 
+    # early_stopping_rounds=10, as_pandas=True, seed=42)
+
+    return ['Random', xgb, xgb_params]
 
 
 def get_cv_models(y):
@@ -128,11 +129,11 @@ def get_cv_models(y):
         Dictionary of all models upon which to perform CV search
     """
     cv_models = {
-        'KNN': init_knn(),
         'Naive Bayes': init_naive_bayes(y),
         'LogReg': init_logreg(),
         'SVM': init_svm(),
         'Random Forest': init_rf(),
+        'XGBoost': init_xgboost(),
     }
 
     return cv_models

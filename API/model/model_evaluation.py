@@ -14,6 +14,7 @@ in your environment to run.
 
 import pandas as pd
 import numpy as np
+from xgboost import DMatrix
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.metrics import accuracy_score, roc_auc_score, classification_report
 
@@ -46,12 +47,15 @@ def evaluate_cv_models(cv_models, X, y):
     for model, params in cv_models.items():
         # Determine which CV search to perform, populate parameters accordingly
         if params[0] == 'Grid':
-            model_cv = GridSearchCV(estimator=params[1], param_grid=params[2], cv=cross_vals, scoring=scoring, refit='AUC')
+            model_cv = GridSearchCV(estimator=params[1], param_grid=params[2], 
+                                    cv=cross_vals, scoring=scoring, refit='Accuracy')
         else:
             model_cv = RandomizedSearchCV(estimator=params[1], param_distributions=params[2], n_iter=150, 
-                                        cv=cross_vals, scoring=scoring, refit='AUC', random_state=42)
+                                        cv=cross_vals, scoring=scoring, refit='Accuracy', random_state=42)
         # Fit data to model
+        """Consider fitting model to DMatrix for XGBoost to improve speed"""
         model_cv.fit(X, y)
+
         # Append model itself to cv_models for later use
         cv_models[model].append(model_cv)
         

@@ -103,16 +103,17 @@ def init_xgboost():
     xgb_params = {
         'n_estimators': np.arange(25, 226, 25),
         'learning_rate': np.arange(0.05, 0.31, 0.05),
-        'subsample': np.arange(0.5, 1.1, 0.1),
+        'subsample': np.arange(0.5, 1.01, 0.1),
         'verbosity': [0],
         'seed': [42],
     }
 
+    """Consider applying XGBoost.cv once best model is selected from RandomizedSearchCV"""
     # model_cv = XGB_CV(params=params[2], data_dmatrix=DMatrix(data=X, label=y), num_boost_round=50, 
     # nfold=cross_vals, stratified=True, metrics=['auc', 'error'], 
     # early_stopping_rounds=10, as_pandas=True, seed=42)
 
-    return ['Random', xgb, xgb_params]
+    return ['XGBoost', xgb, xgb_params]
 
 
 def get_cv_models(y):

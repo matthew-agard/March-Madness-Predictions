@@ -5,7 +5,7 @@ also used as a module in the March_Madness_Predictions Jupyter notebooks.
 
 The following functions are present:
     * get_team_data
-    * get_rankings_data
+    * get_ratings_data
     * get_coach_data
     * get_null_rows
     * get_feature_null_counts
@@ -49,8 +49,8 @@ def get_team_data(url, attrs, header=1):
     return teams_df[0]
 
 
-def get_rankings_data(url):
-    """Fetch team season rankings
+def get_ratings_data(url):
+    """Fetch team season ratings
 
     Parameters
     ----------
@@ -59,7 +59,7 @@ def get_rankings_data(url):
 
     Returns
     -------
-    rankings_df : DataFrame
+    ratings_df : DataFrame
         Curated data points read into a DataFrame
     """
     # Fetch raw HTML and scrape its data
@@ -68,16 +68,19 @@ def get_rankings_data(url):
     rows = table.find_all("tr")
 
     # Prepare DataFrame
-    rankings_df = pd.DataFrame(columns=['Team', 'Top_25'])
+    ratings_df = pd.DataFrame(columns=['Team', 'Top_25', 'Off_SRS', 'Def_SRS'])
 
     # Iterate over raw data to extract team and rank HTML elements
-    for i, rank in enumerate(rows):
-        if rank.find('a'):
-            team = rank.find('a')
-            # Identify Top 25 teams using ternary operator to produce binary output
-            rankings_df.loc[i] = [team.text, 1 if (len(rankings_df) < 25) else 0]
+    for i, row in enumerate(rows):
+        if row.find('a'):
+            team = row.find('a')
+            off_srs = row.find("td", attrs={"data-stat": "srs_off"})
+            def_srs = row.find("td", attrs={"data-stat": "srs_def"})
             
-    return rankings_df
+            # Identify Top 25 teams using ternary operator to produce binary output
+            ratings_df.loc[i] = [team.text, 1 if (len(ratings_df) < 25) else 0, off_srs.text, def_srs.text]
+            
+    return ratings_df
 
 
 def get_coach_data(url):

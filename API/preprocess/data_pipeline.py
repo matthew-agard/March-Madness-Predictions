@@ -4,7 +4,7 @@ This script is used as a module in the March_Madness_Predictions Jupyter noteboo
 
 The following functions are present:
     * regular_season_stats
-    * team_rankings
+    * team_ratings
     * coach_performance
     * all_team_season_data
     * hist_tournament_games
@@ -21,10 +21,10 @@ import pandas as pd
 
 from sys import path
 path.append('../fetch')
-from data_fetch import get_team_data, get_rankings_data, get_coach_data, get_hist_bracket
+from data_fetch import get_team_data, get_ratings_data, get_coach_data, get_hist_bracket
 
 from data_clean import clean_basic_stats, clean_adv_stats, clean_coach_stats, clean_merged_season_stats, clean_tourney_data, clean_curr_round_data, fill_playin_teams, clean_bracket
-from data_merge import merge_clean_team_stats, merge_clean_rankings, merge_clean_coaches, merge_clean_tourney_games
+from data_merge import merge_clean_team_stats, merge_clean_ratings, merge_clean_coaches, merge_clean_tourney_games
 from feature_engineering import totals_to_game_average, conf_wl_pct, encode_confs, bidirectional_rounds_str_numeric, matchups_to_underdog_relative, scale_features, create_bracket_round, create_bracket_winners
 
 
@@ -59,8 +59,8 @@ def regular_season_stats(year):
     return clean_season_basic_df, clean_reg_season_df
 
 
-def team_rankings(year, season_stats):
-    """Fetch and clean regular season team rankings, merge onto team stats
+def team_ratings(year, season_stats):
+    """Fetch and clean regular season team ratings, merge onto team stats
 
     Parameters
     ----------
@@ -72,26 +72,26 @@ def team_rankings(year, season_stats):
     Returns
     -------
     season_team_df : DataFrame
-        Cleaned regular season stats and rankings for all teams in given year
+        Cleaned regular season stats and ratings for all teams in given year
     """
-    # Fetch team rankings data (already cleaned)
-    rankings_df = get_rankings_data(url=f"https://www.sports-reference.com/cbb/seasons/{year}-ratings.html")
+    # Fetch team ratings data (already cleaned)
+    ratings_df = get_ratings_data(url=f"https://www.sports-reference.com/cbb/seasons/{year}-ratings.html")
 
-    # Merge rankings data to all team stats
-    season_team_df = merge_clean_rankings(season_stats, rankings_df)
+    # Merge ratings data to all team stats
+    season_team_df = merge_clean_ratings(season_stats, ratings_df)
 
     return season_team_df
 
 
-def coach_performance(year, stats_rankings):
-    """Fetch and clean coach tournament records, merge onto team stats and rankings
+def coach_performance(year, stats_ratings):
+    """Fetch and clean coach tournament records, merge onto team stats and ratings
 
     Parameters
     ----------
     year : int
         Calendar year
-    stats_rankings : DataFrame
-        Cleaned regular season stats and rankings for all teams in given year
+    stats_ratings : DataFrame
+        Cleaned regular season stats and ratings for all teams in given year
 
     Returns
     -------
@@ -103,7 +103,7 @@ def coach_performance(year, stats_rankings):
     clean_coaches_df = clean_coach_stats(coaches_df)
 
     # Merge coach data to all regular season data
-    all_reg_season_df = merge_clean_coaches(stats_rankings, clean_coaches_df)
+    all_reg_season_df = merge_clean_coaches(stats_ratings, clean_coaches_df)
 
     return all_reg_season_df
 
@@ -126,11 +126,11 @@ def all_team_season_data(year):
     # Fetch, clean, and merge regular season team stats
     clean_season_basic_df, team_season_stats_df = regular_season_stats(year)
 
-    # Fetch and clean team rankings, merge to regular season team stats
-    team_stats_rankings_df = team_rankings(year, team_season_stats_df)
+    # Fetch and clean team ratings, merge to regular season team stats
+    team_stats_ratings_df = team_ratings(year, team_season_stats_df)
 
-    # Fetch and clean coach tournament records, merge them to team stats and rankings
-    all_season_stats_df = coach_performance(year, team_stats_rankings_df)
+    # Fetch and clean coach tournament records, merge them to team stats and ratings
+    all_season_stats_df = coach_performance(year, team_stats_ratings_df)
 
     return all_season_stats_df, clean_season_basic_df
 

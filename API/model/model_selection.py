@@ -88,7 +88,7 @@ def init_rf():
     """
     rf = RandomForestClassifier()
     rf_params = {
-        'n_estimators': np.arange(25, 226, 25),
+        'n_estimators': np.arange(100, 301, 25),
         'criterion': ['gini', 'entropy'],
         'min_samples_split': [2**i for i in range(1, 6)],
         'min_samples_leaf': [2**i for i in range(1, 6)],
@@ -101,7 +101,7 @@ def init_rf():
 def init_xgboost():
     xgb = XGBClassifier()
     xgb_params = {
-        'n_estimators': np.arange(25, 226, 25),
+        'n_estimators': np.arange(100, 301, 25),
         'learning_rate': np.arange(0.05, 0.31, 0.05),
         'subsample': np.arange(0.5, 1.01, 0.1),
         'verbosity': [0],
@@ -134,7 +134,7 @@ def get_cv_models(y):
         'LogReg': init_logreg(),
         'SVM': init_svm(),
         'Random Forest': init_rf(),
-        'XGBoost': init_xgboost(),
+        # 'XGBoost': init_xgboost(),
     }
 
     return cv_models

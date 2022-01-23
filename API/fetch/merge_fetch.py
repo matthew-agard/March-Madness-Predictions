@@ -46,7 +46,7 @@ def merge_raw_tourney_games(year, seeds_list, teams_scores_list, rounds_list):
     
     # Format DataFrame to seamlessly integrate into custom API pipeline
     for col in games_df.columns:
-        if ('Seed' in col) or ('Score' in col) or ('Year' in col):
+        if any([val in col for val in ['Seed', 'Score', 'Year']]):
             games_df[col] = games_df[col].astype(int)
 
     return games_df

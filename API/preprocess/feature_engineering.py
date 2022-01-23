@@ -113,7 +113,7 @@ def totals_to_game_average(all_season_df, season_basic_cols):
     for team in ['Favorite', 'Underdog']:
         # Iterate all over basic team stats columns
         for col in season_basic_cols:
-            if (col not in ['School', 'G', 'SRS']) and ('%' not in col) and ('Conf' not in col):
+            if (col != 'G') and not any([val in col for val in ['%', 'Conf', 'SRS']]):
                 try:
                     # Convert basic team stat from season total to per game average
                     all_season_df[f'{col}/Game_{team}'] = np.round(all_season_df[f'{col}_{team}'] / all_season_df[f'G_{team}'], 1)

@@ -19,7 +19,8 @@ The purpose of this personal project is to perform supervised classification on 
 ...also in the works...
 
 # TODO
-- Perform data integrity check on 2022 NCAA data
+- Perform data integrity check on 2022 NCAA tournament participants
+- Message sportsreference data curators about when & where they make updates to Top 25 ratings & create tournament bracket
 - Fix "Compare Predictions to True Outcomes" section
 - Add EDA question for conference performance in the tournament
 - Feature Tasks:
@@ -32,7 +33,7 @@ The purpose of this personal project is to perform supervised classification on 
     - Log Loss
     - Hinge Loss
     - Etc...
-- Experiment with Monte Carlo simulation and bagging techniques for bracket_pipeline() using different X_train fits
+- Consider implementing model regularization to offset overpowering Underdog_Rel_G feature
 - start_bracket_from_round() functionality; could be used to overwrite predictions and recreate bracket from there
 - Productionize model to the cloud (AWS, GCP, Azure)
 - Flesh out README "Setup" section

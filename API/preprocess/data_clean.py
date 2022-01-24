@@ -22,8 +22,7 @@ from datetime import datetime
 from data_integrity import curr_season_to_tourney_dict
 from feature_engineering import create_faves_underdogs, bidirectional_rounds_str_numeric, create_target_variable
 
-# curr_year = datetime.now().year
-curr_year = 2021 # for beta testing
+curr_year = datetime.now().year - 1 # for beta testing
 
 
 def clean_basic_stats(df):

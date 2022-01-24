@@ -69,28 +69,25 @@ rounds_numeric_to_str = {value:key for (key, value) in rounds_str_to_numeric.ite
 # from data_pipeline import all_team_season_data
 
 # def team_name_integrity_check(start_year, curr_year):
-#      hist_stats_df, hist_coach_df = pd.DataFrame(), pd.DataFrame()
+#     hist_stats_df, hist_coach_df = pd.DataFrame(), pd.DataFrame()
 
-#      for year in range(start_year, curr_year):
-#           bracket = getch.get_hist_bracket(url=f'https://www.sports-reference.com/cbb/postseason/{year}-ncaa.html', year=year)
-#           hist_brackets_df = pd.concat([hist_brackets_df, bracket], ignore_index=True)
-          
-#           coaches = fetch.get_coach_data(url=f"https://www.sports-reference.com/cbb/seasons/{year}-coaches.html")
-#           hist_coach_df = pd.concat([hist_coach_df, coaches], ignore_index=True)
-          
-#           all_curr_season_data, curr_season_basic_df = all_team_season_data(year)
-#           stats = clean_merged_season_stats(year, all_curr_season_data, curr_season_basic_df)
-#           hist_stats_df = pd.concat([hist_stats_df, stats], ignore_index=True)
+#     for year in range(start_year, curr_year):
+#         coaches = fetch.get_coach_data(url=f"https://www.sports-reference.com/cbb/seasons/{year}-coaches.html")
+#         hist_coach_df = pd.concat([hist_coach_df, coaches], ignore_index=True)
 
-#      school_stats_set = set(hist_stats_df['School'])
-#      school_coach_set = set(hist_coach_df['Coach_Team'])
+#         all_curr_season_data, curr_season_basic_df = all_team_season_data(year)
+#         stats = clean_merged_season_stats(year, all_curr_season_data)
+#         hist_stats_df = pd.concat([hist_stats_df, stats], ignore_index=True)
 
-#      stat_coach_teams_diff_pre = school_stats_set.difference(school_coach_set)
+#     school_stats_set = set(hist_stats_df['School'])
+#     school_coach_set = set(hist_coach_df['Coach_Team'])
 
-#      hist_stats_df['School'].replace(season_team_to_coach_team_dict, inplace=True)
-#      school_stats_set = set(hist_stats_df['School'])
+#     stat_coach_teams_diff_pre = school_stats_set.difference(school_coach_set)
 
-#      stat_coach_teams_diff_post = school_stats_set.difference(school_coach_set)
+#     hist_stats_df['School'].replace(season_team_to_coach_team_dict, inplace=True)
+#     school_stats_set = set(hist_stats_df['School'])
 
-#      true_diff = stat_coach_teams_diff_post.difference(stat_coach_teams_diff_pre)
-#      return true_diff
+#     stat_coach_teams_diff_post = school_stats_set.difference(school_coach_set)
+
+#     true_diff = stat_coach_teams_diff_post.difference(stat_coach_teams_diff_pre)
+#     return true_diff

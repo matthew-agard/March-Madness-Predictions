@@ -54,6 +54,8 @@ def init_logreg():
     lr = LogisticRegression()
     lr_params = {
         'C': [10**i for i in range(-5, 6)],
+        'penalty': ['l1', 'l2'],
+        'solver': ['saga', 'liblinear'],
         'random_state': [42],
     }
 
@@ -71,6 +73,7 @@ def init_svm():
     svm = LinearSVC()
     svm_params = {
         'dual': [False],
+        'penalty': ['l1', 'l2'],
         'C': [10**i for i in range(-5, 6)],
         'random_state': [42],
     }
@@ -89,9 +92,10 @@ def init_rf():
     rf = RandomForestClassifier()
     rf_params = {
         'n_estimators': np.arange(100, 301, 25),
-        'criterion': ['gini', 'entropy'],
+        'criterion': ['entropy'],
         'min_samples_split': [2**i for i in range(1, 6)],
         'min_samples_leaf': [2**i for i in range(1, 6)],
+        'max_features': ['auto', 'log2'],
         'random_state': [42],
     }
 

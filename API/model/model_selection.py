@@ -91,11 +91,11 @@ def init_rf():
     """
     rf = RandomForestClassifier()
     rf_params = {
-        'n_estimators': np.arange(100, 301, 25),
+        'n_estimators': np.arange(100, 251, 25),
         'criterion': ['entropy'],
-        'min_samples_split': [2**i for i in range(1, 6)],
+        'max_samples': np.arange(0.5, 0.71, 0.1),
+        'min_samples_split': [2**i for i in range(2, 7)],
         'min_samples_leaf': [2**i for i in range(1, 6)],
-        'max_features': ['auto', 'log2'],
         'random_state': [42],
     }
 
@@ -105,9 +105,11 @@ def init_rf():
 def init_xgboost():
     xgb = XGBClassifier()
     xgb_params = {
-        'n_estimators': np.arange(100, 301, 25),
-        'learning_rate': np.arange(0.05, 0.31, 0.05),
-        'subsample': np.arange(0.5, 1.01, 0.1),
+        'n_estimators': np.arange(100, 251, 25),
+        'learning_rate': np.arange(0.01, 0.06, 0.01),
+        'max_depth': np.arange(5, 8),
+        'subsample': np.arange(0.5, 0.71, 0.1),
+        'eval_metric': ['error'],
         'verbosity': [0],
         'seed': [42],
     }
@@ -138,7 +140,7 @@ def get_cv_models(y):
         'LogReg': init_logreg(),
         'SVM': init_svm(),
         'Random Forest': init_rf(),
-        # 'XGBoost': init_xgboost(),
+        'XGBoost': init_xgboost(),
     }
 
     return cv_models

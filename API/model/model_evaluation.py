@@ -50,7 +50,7 @@ def evaluate_cv_models(cv_models, X, y):
             model_cv = GridSearchCV(estimator=params[1], param_grid=params[2], 
                                     cv=cross_vals, scoring=scoring, refit='Accuracy')
         else:
-            model_cv = RandomizedSearchCV(estimator=params[1], param_distributions=params[2], n_iter=150, 
+            model_cv = RandomizedSearchCV(estimator=params[1], param_distributions=params[2], n_iter=100, 
                                         cv=cross_vals, scoring=scoring, refit='Accuracy', random_state=42)
         # Fit data to model
         """Consider fitting model to DMatrix for XGBoost to improve speed"""

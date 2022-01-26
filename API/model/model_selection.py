@@ -91,11 +91,10 @@ def init_rf():
     """
     rf = RandomForestClassifier()
     rf_params = {
-        'n_estimators': np.arange(100, 251, 25),
+        'n_estimators': np.arange(100, 201, 25),
         'criterion': ['entropy'],
-        'max_samples': np.arange(0.5, 0.71, 0.1),
-        'min_samples_split': [2**i for i in range(2, 7)],
-        'min_samples_leaf': [2**i for i in range(1, 6)],
+        'min_samples_split': [2**i for i in range(3, 7)],
+        'min_samples_leaf': [2**i for i in range(1, 5)],
         'random_state': [42],
     }
 
@@ -105,19 +104,17 @@ def init_rf():
 def init_xgboost():
     xgb = XGBClassifier()
     xgb_params = {
-        'n_estimators': np.arange(100, 251, 25),
-        'learning_rate': np.arange(0.01, 0.06, 0.01),
-        'max_depth': np.arange(5, 8),
-        'subsample': np.arange(0.5, 0.71, 0.1),
+        'num_parallel_tree': np.arange(5, 26, 5),
+        'n_estimators': np.arange(100, 201, 25),
+        'learning_rate': np.arange(0.05, 0.25, 0.05),
         'eval_metric': ['error'],
+        # 'sampling_method': ['gradient_based'],
+        # 'tree_method': ['gpu_hist'],
+        # 'updater': ['grow_gpu_hist,prune'],
+        # 'predictor': ['gpu_predictor'],
         'verbosity': [0],
         'seed': [42],
     }
-
-    """Consider applying XGBoost.cv once best model is selected from RandomizedSearchCV"""
-    # model_cv = XGB_CV(params=params[2], data_dmatrix=DMatrix(data=X, label=y), num_boost_round=50, 
-    # nfold=cross_vals, stratified=True, metrics=['auc', 'error'], 
-    # early_stopping_rounds=10, as_pandas=True, seed=42)
 
     return ['XGBoost', xgb, xgb_params]
 
@@ -136,10 +133,10 @@ def get_cv_models(y):
         Dictionary of all models upon which to perform CV search
     """
     cv_models = {
-        'Naive Bayes': init_naive_bayes(y),
-        'LogReg': init_logreg(),
-        'SVM': init_svm(),
-        'Random Forest': init_rf(),
+        # 'Naive Bayes': init_naive_bayes(y),
+        # 'LogReg': init_logreg(),
+        # 'SVM': init_svm(),
+        # 'Random Forest': init_rf(),
         'XGBoost': init_xgboost(),
     }
 

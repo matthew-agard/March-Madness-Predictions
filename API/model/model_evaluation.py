@@ -6,7 +6,7 @@ The following functions are present:
     * evaluate_cv_models
     * probs_to_preds
     * test_model_thresholds
-    * get_classification_report
+    * classification_report
 
 Requires a minimum of the 'pandas', 'numpy', and 'sklearn' libraries being present 
 in your environment to run.
@@ -14,10 +14,9 @@ in your environment to run.
 
 import pandas as pd
 import numpy as np
-from xgboost import DMatrix
-from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, StratifiedKFold
 from sklearn.metrics import accuracy_score, roc_auc_score, classification_report
-
+from xgboost import DMatrix, train as xgb_train
 
 def evaluate_cv_models(cv_models, X, y):
     """Capture stats on model performances against chosen metrics
@@ -39,6 +38,7 @@ def evaluate_cv_models(cv_models, X, y):
     # Define CV search parameters and DataFrame to store results
     model_performance = pd.DataFrame(columns=['Mean_Accuracy', 'Mean_Accuracy_Std', 'Mean_AUC', 'Mean_AUC_Std'])
     cross_vals = 4
+    rand_iters = 5
     scoring = {
         'AUC': 'roc_auc', 
         'Accuracy': 'accuracy',
@@ -47,38 +47,73 @@ def evaluate_cv_models(cv_models, X, y):
     for model, params in cv_models.items():
         # Determine which CV search to perform, populate parameters accordingly
         if params[0] == 'Grid':
-            model_cv = GridSearchCV(estimator=params[1], param_grid=params[2], 
+            model_cv = GridSearchCV(estimator=params[1], param_grid=params[2], n_jobs=-2,
                                     cv=cross_vals, scoring=scoring, refit='Accuracy')
-        else:
-            model_cv = RandomizedSearchCV(estimator=params[1], param_distributions=params[2], n_iter=100, 
-                                        cv=cross_vals, scoring=scoring, refit='Accuracy', random_state=42)
-        # Fit data to model
-        """Consider fitting model to DMatrix for XGBoost to improve speed"""
-        model_cv.fit(X, y)
-
-        # Append model itself to cv_models for later use
-        cv_models[model].append(model_cv)
+        elif params[0] == 'Random':
+            model_cv = RandomizedSearchCV(estimator=params[1], param_distributions=params[2], n_iter=rand_iters, n_jobs=-2,
+                                            cv=cross_vals, scoring=scoring, refit='Accuracy', random_state=42)
         
-        # Store model performance with model key in DataFrame
-        model_performance.loc[model] = np.round([
-            model_cv.cv_results_['mean_test_Accuracy'].mean(),
-            model_cv.cv_results_['std_test_Accuracy'].mean(),
-            model_cv.cv_results_['mean_test_AUC'].mean(),
-            model_cv.cv_results_['std_test_AUC'].mean(),
-        ], 3)
+        else:
+            xgb_model_performance = pd.DataFrame(columns=['Mean_Accuracy', 'Mean_Accuracy_Std', 'Mean_AUC', 'Mean_AUC_Std'])
+            cv_X, cv_y = X, y
+            cv_X.index, cv_y.index = np.arange(len(X)), np.arange(len(y))
 
-    return model_performance
+            for iter in range(rand_iters):
+                rand_params = {key: np.random.choice(params[2][key]) for key in params[2].keys()}
+                cv = StratifiedKFold(n_splits=cross_vals, shuffle=True)
+                cv_results = {
+                    'Accuracy': [],
+                    'AUC': [],
+                }
+
+                for train_index, val_index in cv.split(cv_X, cv_y):
+                    X_train, X_val = cv_X.iloc[train_index, :], cv_X.iloc[val_index, :]
+                    y_train, y_val = cv_y[train_index], cv_y[val_index]
+                    dtrain = DMatrix(data=X_train, label=y_train)
+                    dval = DMatrix(data=X_val, label=y_val)
+
+                    trained_model = xgb_train(params=rand_params, dtrain=dtrain, evals=(dval, 'val_set'),
+                                                    num_boost_round=250, early_stopping_rounds=10)
+
+                    y_preds = model_predictions(trained_model, X_val)
+                    cv_results['Accuracy'].append(accuracy_score(y_val, y_preds))
+                    cv_results['AUC'].append(roc_auc_score(y_val, y_preds))
+
+                xgb_model_performance.loc[iter] = np.round([
+                    cv_results['Accuracy'].mean(),
+                    cv_results['Accuracy'].std(),
+                    cv_results['AUC'].mean(),
+                    cv_results['AUC'].std(),
+                ], 3)
+
+            return xgb_model_performance
+    #     # Fit data to model
+    #     """Consider fitting model to DMatrix for XGBoost to improve speed"""
+    #     model_cv.fit(X, y)
+
+    #     # Append model itself to cv_models for later use
+    #     cv_models[model].append(model_cv)
+        
+    #     # Store model performance with model key in DataFrame
+    #     model_performance.loc[model] = np.round([
+    #         model_cv.cv_results_['mean_test_Accuracy'].mean(),
+    #         model_cv.cv_results_['std_test_Accuracy'].mean(),
+    #         model_cv.cv_results_['mean_test_AUC'].mean(),
+    #         model_cv.cv_results_['std_test_AUC'].mean(),
+    #     ], 3)
+
+    # return model_performance
 
 
-def probs_to_preds(probs, thresh):
+def probs_to_preds(probs, thresh=0.5):
     """Convert probabilities to binary target variable predictions
 
     Parameters
     ----------
     probs : list
         Probabilities of an upset corresponding to each game
-    thresh : float
-        Threshold for determining whether or not a game is an upset
+    thresh : float, optional
+        Threshold for determining whether or not a game is an upset (default is 0.5)
 
     Returns
     -------
@@ -121,6 +156,16 @@ def test_model_thresholds(truths, probs, threshs):
         performances.loc[thresh] = np.round([acc, auc, pct_upsets], 3)
         
     return performances.drop_duplicates(subset=['Accuracy', 'AUC'], keep='last')
+
+
+def model_predictions(model, X):
+    try:
+        y_preds = model.predict(X)
+    except TypeError:
+        y_probs = model.predict(DMatrix(data=X))
+        y_preds = probs_to_preds(y_probs)
+
+    return y_preds
 
 
 def get_classification_report(truths, preds):

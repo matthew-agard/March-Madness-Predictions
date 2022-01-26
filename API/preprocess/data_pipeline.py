@@ -22,6 +22,8 @@ import pandas as pd
 from sys import path
 path.append('../fetch')
 from data_fetch import get_team_data, get_ratings_data, get_coach_data, get_hist_bracket
+path.append('../model')
+from model_evaluation import model_predictions
 
 from data_clean import clean_basic_stats, clean_adv_stats, clean_coach_stats, clean_merged_season_stats, clean_tourney_data, clean_curr_round_data, fill_playin_teams, clean_bracket
 from data_merge import merge_clean_team_stats, merge_clean_ratings, merge_clean_coaches, merge_clean_tourney_games
@@ -321,7 +323,7 @@ def bracket_pipeline(year, play_in, first_round, model, fit_df, null_drops):
         all_round_data, curr_X, school_matchups_df = round_pipeline(curr_round, all_curr_matchups, curr_season_basic_df,
                                                                     clean_curr_season_data, fit_df, null_drops)
         # Create predictions
-        school_matchups_df['Underdog_Upset'] = model.predict(curr_X)
+        school_matchups_df['Underdog_Upset'] = model_predictions(model, curr_X)
         
         # Clean current round for use in generating a subsequent round (if needed)
         curr_X, school_matchups_df = clean_curr_round_data(all_round_data, curr_X, school_matchups_df)

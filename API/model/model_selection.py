@@ -104,10 +104,9 @@ def init_rf():
 def init_xgboost():
     xgb = XGBClassifier()
     xgb_params = {
-        'num_parallel_tree': np.arange(5, 26, 5),
+        # 'num_parallel_tree': np.arange(5, 26, 5),
         'n_estimators': np.arange(100, 201, 25),
         'learning_rate': np.arange(0.05, 0.25, 0.05),
-        'eval_metric': ['error'],
         # 'sampling_method': ['gradient_based'],
         # 'tree_method': ['gpu_hist'],
         # 'updater': ['grow_gpu_hist,prune'],

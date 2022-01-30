@@ -14,9 +14,9 @@ in your environment to run.
 
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, StratifiedKFold
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.metrics import accuracy_score, roc_auc_score, classification_report
-from xgboost import DMatrix, train as xgb_train
+from XGBoostCV import XGBoostCV
 
 def evaluate_cv_models(cv_models, X, y):
     """Capture stats on model performances against chosen metrics
@@ -38,7 +38,7 @@ def evaluate_cv_models(cv_models, X, y):
     # Define CV search parameters and DataFrame to store results
     model_performance = pd.DataFrame(columns=['Mean_Accuracy', 'Mean_Accuracy_Std', 'Mean_AUC', 'Mean_AUC_Std'])
     cross_vals = 4
-    rand_iters = 5
+    rand_iters = 1
     scoring = {
         'AUC': 'roc_auc', 
         'Accuracy': 'accuracy',
@@ -48,61 +48,29 @@ def evaluate_cv_models(cv_models, X, y):
         # Determine which CV search to perform, populate parameters accordingly
         if params[0] == 'Grid':
             model_cv = GridSearchCV(estimator=params[1], param_grid=params[2], n_jobs=-2,
-                                    cv=cross_vals, scoring=scoring, refit='Accuracy')
+                                        cv=cross_vals, scoring=scoring, refit='Accuracy')
         elif params[0] == 'Random':
             model_cv = RandomizedSearchCV(estimator=params[1], param_distributions=params[2], n_iter=rand_iters, n_jobs=-2,
                                             cv=cross_vals, scoring=scoring, refit='Accuracy', random_state=42)
-        
         else:
-            xgb_model_performance = pd.DataFrame(columns=['Mean_Accuracy', 'Mean_Accuracy_Std', 'Mean_AUC', 'Mean_AUC_Std'])
-            cv_X, cv_y = X, y
-            cv_X.index, cv_y.index = np.arange(len(X)), np.arange(len(y))
-
-            for iter in range(rand_iters):
-                rand_params = {key: np.random.choice(params[2][key]) for key in params[2].keys()}
-                cv = StratifiedKFold(n_splits=cross_vals, shuffle=True)
-                cv_results = {
-                    'Accuracy': [],
-                    'AUC': [],
-                }
-
-                for train_index, val_index in cv.split(cv_X, cv_y):
-                    X_train, X_val = cv_X.iloc[train_index, :], cv_X.iloc[val_index, :]
-                    y_train, y_val = cv_y[train_index], cv_y[val_index]
-                    dtrain = DMatrix(data=X_train, label=y_train)
-                    dval = DMatrix(data=X_val, label=y_val)
-
-                    trained_model = xgb_train(params=rand_params, dtrain=dtrain, evals=(dval, 'val_set'),
-                                                    num_boost_round=250, early_stopping_rounds=10)
-
-                    y_preds = model_predictions(trained_model, X_val)
-                    cv_results['Accuracy'].append(accuracy_score(y_val, y_preds))
-                    cv_results['AUC'].append(roc_auc_score(y_val, y_preds))
-
-                xgb_model_performance.loc[iter] = np.round([
-                    cv_results['Accuracy'].mean(),
-                    cv_results['Accuracy'].std(),
-                    cv_results['AUC'].mean(),
-                    cv_results['AUC'].std(),
-                ], 3)
-
-            return xgb_model_performance
-    #     # Fit data to model
-    #     """Consider fitting model to DMatrix for XGBoost to improve speed"""
-    #     model_cv.fit(X, y)
-
-    #     # Append model itself to cv_models for later use
-    #     cv_models[model].append(model_cv)
+            model_cv = XGBoostCV(iterations=rand_iters, params=params[2], cross_vals=cross_vals, metrics=['auc', 'error'])
         
-    #     # Store model performance with model key in DataFrame
-    #     model_performance.loc[model] = np.round([
-    #         model_cv.cv_results_['mean_test_Accuracy'].mean(),
-    #         model_cv.cv_results_['std_test_Accuracy'].mean(),
-    #         model_cv.cv_results_['mean_test_AUC'].mean(),
-    #         model_cv.cv_results_['std_test_AUC'].mean(),
-    #     ], 3)
+        # Fit data to model
+        """Consider fitting model to DMatrix for XGBoost to improve speed"""
+        model_performance = model_cv.fit(X, y)
 
-    # return model_performance
+        # # Append model itself to cv_models for later use
+        # cv_models[model].append(model_cv)
+        
+        # # Store model performance with model key in DataFrame
+        # model_performance.loc[model] = np.round([
+        #     model_cv.cv_results_['mean_test_Accuracy'].mean(),
+        #     model_cv.cv_results_['std_test_Accuracy'].mean(),
+        #     model_cv.cv_results_['mean_test_AUC'].mean(),
+        #     model_cv.cv_results_['std_test_AUC'].mean(),
+        # ], 3)
+
+    return model_performance
 
 
 def probs_to_preds(probs, thresh=0.5):

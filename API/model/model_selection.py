@@ -53,7 +53,7 @@ def init_logreg():
     """
     lr = LogisticRegression()
     lr_params = {
-        'C': [10**i for i in range(-5, 6)],
+        'C': [10**i for i in range(-3, 3)],
         'penalty': ['l1', 'l2'],
         'solver': ['saga', 'liblinear'],
         'random_state': [42],
@@ -74,7 +74,7 @@ def init_svm():
     svm_params = {
         'dual': [False],
         'penalty': ['l1', 'l2'],
-        'C': [10**i for i in range(-5, 6)],
+        'C': [10**i for i in range(-3, 3)],
         'random_state': [42],
     }
 
@@ -101,18 +101,19 @@ def init_rf():
     return ['Random', rf, rf_params]
 
 
-def init_xgboost():
+def init_xgb():
     xgb = XGBClassifier()
     xgb_params = {
-        # 'num_parallel_tree': np.arange(5, 26, 5),
-        'n_estimators': np.arange(100, 201, 25),
-        'learning_rate': np.arange(0.05, 0.25, 0.05),
+        # 'num_parallel_tree': np.arange(5, 16, 5),
+        'n_estimators': np.arange(150, 251, 25),
+        'learning_rate': np.arange(0.025, 0.125, 0.025),
+        'subsample': np.arange(0.2, 0.6, 0.1),
+        'verbosity': [0],
+        'seed': [42],
         # 'sampling_method': ['gradient_based'],
         # 'tree_method': ['gpu_hist'],
         # 'updater': ['grow_gpu_hist,prune'],
         # 'predictor': ['gpu_predictor'],
-        'verbosity': [0],
-        'seed': [42],
     }
 
     return ['XGBoost', xgb, xgb_params]
@@ -132,11 +133,11 @@ def get_cv_models(y):
         Dictionary of all models upon which to perform CV search
     """
     cv_models = {
-        # 'Naive Bayes': init_naive_bayes(y),
-        # 'LogReg': init_logreg(),
-        # 'SVM': init_svm(),
-        # 'Random Forest': init_rf(),
-        'XGBoost': init_xgboost(),
+        'Naive Bayes': init_naive_bayes(y),
+        'LogReg': init_logreg(),
+        'SVM': init_svm(),
+        'Random Forest': init_rf(),
+        'XGBoost': init_xgb(),
     }
 
     return cv_models

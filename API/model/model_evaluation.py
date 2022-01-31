@@ -16,6 +16,7 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.metrics import accuracy_score, roc_auc_score, classification_report
+from xgboost import DMatrix
 from XGBoostCV import XGBoostCV
 
 def evaluate_cv_models(cv_models, X, y):
@@ -38,7 +39,7 @@ def evaluate_cv_models(cv_models, X, y):
     # Define CV search parameters and DataFrame to store results
     model_performance = pd.DataFrame(columns=['Mean_Accuracy', 'Mean_Accuracy_Std', 'Mean_AUC', 'Mean_AUC_Std'])
     cross_vals = 4
-    rand_iters = 1
+    rand_iters = 50
     scoring = {
         'AUC': 'roc_auc', 
         'Accuracy': 'accuracy',
@@ -56,19 +57,18 @@ def evaluate_cv_models(cv_models, X, y):
             model_cv = XGBoostCV(iterations=rand_iters, params=params[2], cross_vals=cross_vals, metrics=['auc', 'error'])
         
         # Fit data to model
-        """Consider fitting model to DMatrix for XGBoost to improve speed"""
-        model_performance = model_cv.fit(X, y)
+        model_cv.fit(X, y)
 
-        # # Append model itself to cv_models for later use
-        # cv_models[model].append(model_cv)
+        # Append model itself to cv_models for later use
+        cv_models[model].append(model_cv)
         
-        # # Store model performance with model key in DataFrame
-        # model_performance.loc[model] = np.round([
-        #     model_cv.cv_results_['mean_test_Accuracy'].mean(),
-        #     model_cv.cv_results_['std_test_Accuracy'].mean(),
-        #     model_cv.cv_results_['mean_test_AUC'].mean(),
-        #     model_cv.cv_results_['std_test_AUC'].mean(),
-        # ], 3)
+        # Store model performance with model key in DataFrame
+        model_performance.loc[model] = np.round([
+            model_cv.cv_results_['mean_test_Accuracy'].mean(),
+            model_cv.cv_results_['std_test_Accuracy'].mean(),
+            model_cv.cv_results_['mean_test_AUC'].mean(),
+            model_cv.cv_results_['std_test_AUC'].mean(),
+        ], 3)
 
     return model_performance
 

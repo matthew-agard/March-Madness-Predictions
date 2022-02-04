@@ -113,7 +113,7 @@ def totals_to_game_average(all_season_df, season_basic_cols):
     for team in ['Favorite', 'Underdog']:
         # Iterate all over basic team stats columns
         for col in season_basic_cols:
-            if (col != 'G') and not any([val in col for val in ['%', 'Conf', 'SRS']]):
+            if (col not in ['G', 'W']) and not any([val in col for val in ['%', 'Conf', 'SRS']]):
                 try:
                     # Convert basic team stat from season total to per game average
                     all_season_df[f'{col}/Game_{team}'] = np.round(all_season_df[f'{col}_{team}'] / all_season_df[f'G_{team}'], 1)
@@ -136,7 +136,7 @@ def conf_wl_pct(df):
     for team in ['Favorite', 'Underdog']:
         df['Conf_W-L%_' + team] = df['Conf_W_' + team] / (df['Conf_W_' + team] + df['Conf_L_' + team])
         # Remove old points/game features to avoid linear dependency
-        df.drop(['Conf_W_' + team, 'Conf_L_' + team], axis=1, inplace=True)
+        df.drop('Conf_L_' + team, axis=1, inplace=True)
 
 
 def encode_confs(df):
@@ -148,8 +148,7 @@ def encode_confs(df):
         Fully merged and cleaned tournament data
     """
     for team in ['Favorite', 'Underdog']:
-        df['Conf_' + team] = df['Conf_' + team].astype('category')
-        df['Conf_' + team] = df['Conf_' + team].cat.codes.astype('float')
+        df['Conf_' + team] = df['Conf_' + team].astype('category').cat.codes.astype('float')
 
 
 def matchups_to_underdog_relative(df):

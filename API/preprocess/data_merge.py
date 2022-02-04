@@ -11,7 +11,7 @@ Requires a minimum of the 'pandas' library being present in your environment to 
 """
 
 import pandas as pd
-from data_integrity import season_team_to_coach_team_dict
+from data_integrity import season_team_to_coach_team_dict, coach_team_to_mm_team_dict
 
 
 def merge_clean_team_stats(basic_df, adv_df):
@@ -101,6 +101,11 @@ def merge_clean_tourney_games(mm_df, all_season_df):
     all_data_df : DataFrame
         Completed dataset
     """
+    # Caveat on 2011 tourney year in which applying the name changes would cause data loss
+    if not mm_df['Team_Favorite'].str.contains('UAB') and not mm_df['Team_Underdog'].str.contains('UAB'):
+        # Change team names accordingly to ensure successful merging with team stats
+        all_season_df['School'].replace(coach_team_to_mm_team_dict, inplace=True)
+
     # Merge favorites' season data onto tournament matchups DataFrame
     favorites_data_df = pd.merge(mm_df, all_season_df, 
                                 left_on='Team_Favorite', right_on='School').drop('School', axis=1)

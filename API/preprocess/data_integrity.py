@@ -41,10 +41,17 @@ season_team_to_coach_team_dict = {
      'Texas Christian': 'TCU',
      'Texas-El Paso': 'UTEP',
      'Texas-San Antonio': 'UTSA',
-     'UC-Santa Barbara': 'UCSB',
+     'UC Davis': 'UC-Davis',
+     'UC Irvine': 'UC-Irvine',
+     'UC Santa Barbara': 'UCSB',
      'University of California': 'California',
      'Virginia Commonwealth': 'VCU',
- }
+}
+
+coach_team_to_mm_team_dict = {
+     'UAB': 'Alabama-Birmingham',
+     'UT Arlington': 'Texas-Arlington',
+}
 
 curr_season_to_tourney_dict = {
      'Loyola (IL)': 'Loyola Chicago',
@@ -65,29 +72,31 @@ rounds_str_to_numeric = {
 
 rounds_numeric_to_str = {value:key for (key, value) in rounds_str_to_numeric.items()}
 
-# from data_clean import clean_merged_season_stats
-# from data_pipeline import all_team_season_data
-
 # def team_name_integrity_check(start_year, curr_year):
-#     hist_stats_df, hist_coach_df = pd.DataFrame(), pd.DataFrame()
+#     hist_stats_df, hist_coach_df, hist_rates_df, hist_games_df = pd.DataFrame(), pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
 
 #     for year in range(start_year, curr_year):
+#         ratings = fetch.get_ratings_data(url=f"https://www.sports-reference.com/cbb/seasons/{year}-ratings.html")
+#         hist_rates_df = pd.concat([hist_rates_df, ratings], ignore_index=True)        
+                
 #         coaches = fetch.get_coach_data(url=f"https://www.sports-reference.com/cbb/seasons/{year}-coaches.html")
 #         hist_coach_df = pd.concat([hist_coach_df, coaches], ignore_index=True)
-
-#         all_curr_season_data, curr_season_basic_df = all_team_season_data(year)
-#         stats = clean_merged_season_stats(year, all_curr_season_data)
+        
+#         mm_games = fetch.get_hist_bracket(url=f'https://www.sports-reference.com/cbb/postseason/{year}-ncaa.html', year=year)
+#         hist_games_df = pd.concat([hist_games_df, mm_games], ignore_index=True)
+        
+#         stats = fetch.get_team_data(url=f"https://www.sports-reference.com/cbb/seasons/{curr_year}-school-stats.html",
+#                                      attrs={'id': 'basic_school_stats'})
 #         hist_stats_df = pd.concat([hist_stats_df, stats], ignore_index=True)
-
+     
 #     school_stats_set = set(hist_stats_df['School'])
+#     school_rates_set = set(hist_rates_df['Team'])
+    
 #     school_coach_set = set(hist_coach_df['Coach_Team'])
+#     school_games_set = set(hist_games_df['Team']).union(set(hist_games_df['Team.1']))
 
-#     stat_coach_teams_diff_pre = school_stats_set.difference(school_coach_set)
-
-#     hist_stats_df['School'].replace(season_team_to_coach_team_dict, inplace=True)
-#     school_stats_set = set(hist_stats_df['School'])
-
-#     stat_coach_teams_diff_post = school_stats_set.difference(school_coach_set)
-
-#     true_diff = stat_coach_teams_diff_post.difference(stat_coach_teams_diff_pre)
-#     return true_diff
+#     rates_stats_diff = school_stats_set.difference(school_rates_set)
+#     coach_rates_diff = school_rates_set.difference(school_coach_set)
+#     games_coach_diff = school_coach_set.difference(school_games_set)
+    
+#     return rates_stats_diff, coach_rates_diff, games_coach_diff

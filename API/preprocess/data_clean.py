@@ -40,12 +40,12 @@ def clean_basic_stats(df):
     """
     # Remove fake, linearly dependent, and unwanted features
     fake_feats = ['Rk', 'MP'] + [col for col in df.columns if ('Unnamed' in col)]
-    lin_dep_feats = ['W', 'L', 'SOS', 'SRS', 'Tm.', 'Opp.', 'FGA', '3PA', 'FTA']
+    lin_dep_feats = ['L', 'SOS', 'SRS', 'Tm.', 'Opp.', 'FGA', '3PA', 'FTA']
     unwanted_feats = [col for col in df.columns if ('.2' in col) or ('.3' in col)]
 
     df.drop(fake_feats + lin_dep_feats + unwanted_feats, axis=1, inplace=True)
 
-    # Rename 
+    # Rename conference record columns (to be later used for features)
     df.rename(columns = {
         'W.1': 'Conf_W',
         'L.1': 'Conf_L',

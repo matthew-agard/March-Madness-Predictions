@@ -33,7 +33,7 @@ The purpose of this personal project is to perform supervised classification on 
     - Log Loss
     - Hinge Loss
     - Etc...
-- Consider implementing model regularization to offset overpowering Underdog_Rel_G feature
+- Consider taking max values from cross validation results instead of mean
 - start_bracket_from_round() functionality; could be used to overwrite predictions and recreate bracket from there
 - Productionize model to the cloud (AWS, GCP, Azure)
 - Flesh out README "Setup" section

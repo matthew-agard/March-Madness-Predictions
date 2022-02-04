@@ -104,17 +104,15 @@ def init_rf():
 def init_xgb():
     xgb = XGBClassifier()
     xgb_params = {
-        'num_parallel_tree': np.arange(5, 16, 5),
-        'n_estimators': np.arange(100, 201, 50),
-        'tree_method': ['hist'], # ['gpu_hist'],
-        'max_bin': [2**i for i in range(8, 11)],
-        'learning_rate': np.arange(0.025, 0.125, 0.025),
+        'n_estimators': np.arange(150, 301, 25),
+        'learning_rate': [0.01, 0.025, 0.05, 0.1],
+        'subsample': np.arange(0.4, 0.7, 0.1),
+        'tree_method': ['gpu_hist'],
+        'sampling_method': ['gradient_based'],
+        'lambda': [100],
+        'eval_metric': ['error'],
         'verbosity': [0],
         'seed': [42],
-        # 'subsample': np.arange(0.2, 0.6, 0.1),
-        # 'sampling_method': ['gradient_based'],
-        # 'updater': ['grow_gpu_hist,prune'],
-        # 'predictor': ['gpu_predictor'],
     }
 
     return ['XGBoost', xgb, xgb_params]

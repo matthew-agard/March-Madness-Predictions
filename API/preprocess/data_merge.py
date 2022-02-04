@@ -101,8 +101,8 @@ def merge_clean_tourney_games(mm_df, all_season_df):
     all_data_df : DataFrame
         Completed dataset
     """
-    # Caveat on 2011 tourney year in which applying the name changes would cause data loss
-    if not mm_df['Team_Favorite'].str.contains('UAB') and not mm_df['Team_Underdog'].str.contains('UAB'):
+    # Caveat on 2011 tourney year in which applying the name changes to UAB would cause data loss
+    if not mm_df['Team_Favorite'].str.contains('UAB').any():
         # Change team names accordingly to ensure successful merging with team stats
         all_season_df['School'].replace(coach_team_to_mm_team_dict, inplace=True)
 

@@ -55,7 +55,4 @@ class XGBoostCV(object):
 
         self.cv_results_['mean_test_Accuracy'] = 1-self.cv_results_['mean_test_Accuracy']
 
-        print(model_tracker)
-        print(self.cv_results_)
-
         self.set_best_estimator(model_tracker)

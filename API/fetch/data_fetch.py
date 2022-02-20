@@ -68,17 +68,19 @@ def get_ratings_data(url):
     rows = table.find_all("tr")
 
     # Prepare DataFrame
-    ratings_df = pd.DataFrame(columns=['Team', 'Top_25', 'Off_SRS', 'Def_SRS'])
+    ratings_df = pd.DataFrame(columns=['Team', 'Top_25', 'SRS'])
 
     # Iterate over raw data to extract team and rank HTML elements
     for i, row in enumerate(rows):
         if row.find('a'):
+            # Get team name
             team = row.find('a')
-            off_srs = row.find("td", attrs={"data-stat": "srs_off"})
-            def_srs = row.find("td", attrs={"data-stat": "srs_def"})
+
+            # Get team simple rating system (SRS) value
+            srs = row.find("td", attrs={"data-stat": "srs"})
             
             # Identify Top 25 teams using ternary operator to produce binary output
-            ratings_df.loc[i] = [team.text, 1 if (len(ratings_df) < 25) else 0, off_srs.text, def_srs.text]
+            ratings_df.loc[i] = [team.text, 1 if (len(ratings_df) < 25) else 0, srs.text]
             
     return ratings_df
 

@@ -22,7 +22,7 @@ from datetime import datetime
 from data_integrity import curr_season_to_tourney_dict
 from feature_engineering import create_faves_underdogs, bidirectional_rounds_str_numeric, create_target_variable
 
-curr_year = datetime.now().year - 1 # for beta testing
+curr_year = datetime.now().year - 1 # for 2022-beta testing
 
 
 def clean_basic_stats(df):
@@ -38,14 +38,14 @@ def clean_basic_stats(df):
     ncaa_df : DataFrame
         All basic regular reason data for March Madness teams
     """
-    # Remove fake, linearly dependent, and unwanted features
+    # Remove fake, linearly dependent, and unwanted stat features
     fake_feats = ['Rk', 'MP'] + [col for col in df.columns if ('Unnamed' in col)]
     lin_dep_feats = ['L', 'SOS', 'SRS', 'Tm.', 'Opp.', 'FGA', '3PA', 'FTA']
     unwanted_feats = [col for col in df.columns if ('.2' in col) or ('.3' in col)]
 
     df.drop(fake_feats + lin_dep_feats + unwanted_feats, axis=1, inplace=True)
 
-    # Rename conference record columns (to be later used for features)
+    # Rename conference record columns (to be later used for stat features)
     df.rename(columns = {
         'W.1': 'Conf_W',
         'L.1': 'Conf_L',

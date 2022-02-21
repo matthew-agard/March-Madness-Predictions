@@ -14,7 +14,7 @@ class XGBoostCV(object):
         self.pandas = pandas
         self.random_state = seed(random_state)
         self.cv_results_ = pd.DataFrame(
-            columns=['mean_test_Accuracy', 'std_test_Accuracy', 'mean_test_AUC', 'std_test_AUC']
+            columns=['mean_test_score', 'std_test_score']
         )
         self.best_params_ = {}
         self.best_estimator_ = None
@@ -26,7 +26,7 @@ class XGBoostCV(object):
 
 
     def set_best_estimator(self, model_tracker):
-        best_iter = self.cv_results_['mean_test_Accuracy'].idxmax()
+        best_iter = self.cv_results_['mean_test_score'].idxmax()
 
         best_boost_round = model_tracker.loc[best_iter, 'Best_Model_Iteration']
         self.best_params_ = model_tracker.loc[best_iter, 'Params']
@@ -50,9 +50,9 @@ class XGBoostCV(object):
 
             model_tracker.loc[iter] = [len(performance_df), rand_params]
             self.cv_results_.loc[iter] = performance_df.iloc[-1][
-                ['test-error-mean', 'test-error-std', 'test-auc-mean', 'test-auc-std']
+                ['test-error-mean', 'test-error-std']
             ].values.tolist()
 
-        self.cv_results_['mean_test_Accuracy'] = 1-self.cv_results_['mean_test_Accuracy']
+        self.cv_results_['mean_test_score'] = 1-self.cv_results_['mean_test_score']
 
         self.set_best_estimator(model_tracker)

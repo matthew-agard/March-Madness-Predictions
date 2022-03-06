@@ -5,7 +5,7 @@ This script is used as a helper module in the data_pipeline script.
 The following functions are present:
     * clean_basic_stats
     * clean_adv_stats
-    * clean_coach_stats
+    * clean_coach_ranking_stats
     * clean_merged_season_stats
     * clean_tourney_data
     * clean_round_cols
@@ -40,7 +40,7 @@ def clean_basic_stats(df):
     """
     # Remove fake, linearly dependent, and unwanted stat features
     fake_feats = ['Rk', 'MP'] + [col for col in df.columns if ('Unnamed' in col)]
-    lin_dep_feats = ['L', 'SOS', 'SRS', 'Tm.', 'Opp.', 'FGA', '3PA', 'FTA']
+    lin_dep_feats = ['L', 'SOS', 'Tm.', 'Opp.', 'FGA', '3PA', 'FTA']
     unwanted_feats = [col for col in df.columns if ('.2' in col) or ('.3' in col)]
 
     df.drop(fake_feats + lin_dep_feats + unwanted_feats, axis=1, inplace=True)
@@ -77,7 +77,7 @@ def clean_adv_stats(df):
     return pd.concat([df['School'], df.iloc[:, -13:]], axis=1)
 
 
-def clean_coach_stats(coach_df):
+def clean_coach_ranking_stats(coach_df):
     """Clean coach tournament performance stats
 
     Parameters
@@ -90,8 +90,8 @@ def clean_coach_stats(coach_df):
     coach_df : DataFrame
         Cleaned coach data for March Madness teams
     """
-    # Fill null values with '0' placeholder
-    coach_df.iloc[:, 1:-1] = coach_df.iloc[:, 1:-1].replace('', '0')
+    # Fill null tournament appearances values with '0' placeholder
+    coach_df.iloc[:, 3:] = coach_df.iloc[:, 3:].replace('', '0')
     return coach_df
 
 

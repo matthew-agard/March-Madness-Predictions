@@ -20,12 +20,11 @@ The purpose of this personal project is to perform supervised classification on 
 
 # TODO
 - Perform data integrity check on 2022 NCAA tournament participants
-- Message sportsreference data curators about when & where they make updates to Top 25 ratings & create tournament bracket
+- Message sportsreference data curators about how they create tournament bracket
 - Fix "Compare Predictions to True Outcomes" section
 - Add EDA question for conference performance in the tournament
 - Feature Tasks:
     - Conference champion (found on Conf. Tour. tab)
-    - 'AP Post' (found on Coaches tab for given year's Top 25 list; also consider Polls tab)
     - Implement stepwise feature selection
 - Models:
     - Neural Network

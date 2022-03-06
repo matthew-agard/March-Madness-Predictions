@@ -6,7 +6,7 @@ also used as a module in the March_Madness_Predictions Jupyter notebooks.
 The following functions are present:
     * get_team_data
     * get_ratings_data
-    * get_coach_data
+    * get_coach_rankings_data
     * get_null_rows
     * get_feature_null_counts
     * get_hist_bracket
@@ -17,9 +17,13 @@ Requires a minimum of the 'pandas' and 're' libraries, as well as the 'web_scrap
 """
 
 import pandas as pd
+import numpy as np
 import re
-from merge_fetch import playin_regions_list, merge_raw_tourney_games
+from datetime import datetime
+from merge_fetch import ratings_team_to_coach_team_dict, playin_regions_list, merge_raw_tourney_games
 from web_scraper_types import bs4_web_scrape, pandas_web_scrape, bracket_web_scrape
+
+curr_year = datetime.now().year
 
 
 def get_team_data(url, attrs, header=1):
@@ -43,19 +47,19 @@ def get_team_data(url, attrs, header=1):
         # Read team data into dataframe
         teams_df = pandas_web_scrape(url, attrs, header)
     except ValueError:
-        # Catch error with empty DataFrame is requested team data doesn't exist
+        # Catch error with empty DataFrame if requested team data doesn't exist
         teams_df = [pd.DataFrame()]
     
     return teams_df[0]
 
 
-def get_ratings_data(url):
+def get_ratings_data(year):
     """Fetch team season ratings
 
     Parameters
     ----------
-    url : str
-        URL path to data
+    year : int
+        Calendar year
 
     Returns
     -------
@@ -63,12 +67,12 @@ def get_ratings_data(url):
         Curated data points read into a DataFrame
     """
     # Fetch raw HTML and scrape its data
-    raw_html = bs4_web_scrape(url)
+    raw_html = bs4_web_scrape(f"https://www.sports-reference.com/cbb/seasons/{year}-ratings.html")
     table = raw_html.find("table", attrs={"id": "ratings"})
     rows = table.find_all("tr")
 
     # Prepare DataFrame
-    ratings_df = pd.DataFrame(columns=['Team', 'Top_25', 'SRS'])
+    ratings_df = pd.DataFrame(columns=['Team', 'Top_25'])
 
     # Iterate over raw data to extract team and rank HTML elements
     for i, row in enumerate(rows):
@@ -77,54 +81,72 @@ def get_ratings_data(url):
             team = row.find('a')
 
             # Get team simple rating system (SRS) value
-            srs = row.find("td", attrs={"data-stat": "srs"})
-            
-            # Identify Top 25 teams using ternary operator to produce binary output
-            ratings_df.loc[i] = [team.text, 1 if (len(ratings_df) < 25) else 0, srs.text]
-            
+            rank = row.find("td", attrs={"data-stat": "ap_rank"})
+
+            # Get Top 25 team status using ternary operator to produce binary output
+            try:
+                rank_text = 1 if (rank.text != '') else 0
+            except AttributeError:
+                pass
+
+            ratings_df.loc[i] = [team.text, rank_text]
+
     return ratings_df
 
 
-def get_coach_data(url):
+def get_coach_rankings_data(year):
     """Fetch team coach performance
 
     Parameters
     ----------
-    url : str
-        URL path to data
+    year : int
+        Calendar year
 
     Returns
     -------
-    coaches_df : DataFrame
+    coaches_rankings_df : DataFrame
         Curated data points read into a DataFrame
     """
     # Fetch raw HTML and scrape its data
-    raw_html = bs4_web_scrape(url)
+    raw_html = bs4_web_scrape(f"https://www.sports-reference.com/cbb/seasons/{year}-coaches.html")
     table = raw_html.find("table", attrs={"id": "coaches"})
     rows = table.find_all("tr")
 
-    # Prepare DataFrame
-    coaches_df = pd.DataFrame(columns=['Coach_Team', 'Coach_Start', 'MM', 'S16', 'F4', 'Champs', 'Conf'])
+    # Prepare DataFrames
+    coaches_rankings_df = pd.DataFrame(columns=['Coach_Team', 'Conf', 'Top_25', 'Coach_Start', 'MM', 'S16', 'F4', 'Champs'])
 
     # Iterate over raw data to extract coach tournament appearances HTML elements
     for i, row in enumerate(rows):
         if(row.find('a')):
             coach_team = row.find_all('a')[1]
+            conf = row.find("td", attrs={"data-stat": "conference"})
             year_start = row.find("td", attrs={"data-stat": "since"})
             mm_apps = row.find("td", attrs={"data-stat": "ncaa_car"})
             sw16_apps = row.find("td", attrs={"data-stat": "sw16_car"})
             f4_apps = row.find("td", attrs={"data-stat": "ff_car"})
             champ_wins = row.find("td", attrs={"data-stat": "champ_car"})
-            conf = row.find("td", attrs={"data-stat": "conference"})
+            
+            if year != curr_year:
+                top_25 = row.find("td", attrs={"data-stat": "ap_post"})
 
-            coaches_df.loc[i] = [
-                coach_team.text, year_start.text, mm_apps.text, sw16_apps.text, f4_apps.text, champ_wins.text, conf.text
+                try:
+                    top_25_text = 1 if (top_25.text != '') else 0
+                except AttributeError:
+                    pass
+            else:
+                ratings_df = get_ratings_data(year)
+                ratings_df['Team'].replace(ratings_team_to_coach_team_dict, inplace=True)
+                top_25_text = ratings_df[ratings_df['Team'] == coach_team.text]['Top_25']
+
+            coaches_rankings_df.loc[i] = [
+                coach_team.text, conf.text, top_25_text, year_start.text, 
+                mm_apps.text, sw16_apps.text, f4_apps.text, champ_wins.text
             ]
 
-    coaches_df.sort_values(by=['Coach_Team', 'Coach_Start'], inplace=True)
-    coaches_df.drop('Coach_Start', axis=1, inplace=True)
+    coaches_rankings_df.sort_values(by=['Coach_Team', 'Coach_Start'], inplace=True)
+    coaches_rankings_df.drop('Coach_Start', axis=1, inplace=True)
 
-    return coaches_df.drop_duplicates(subset='Coach_Team', keep='last')
+    return coaches_rankings_df.drop_duplicates(subset='Coach_Team', keep='last')
 
 
 def get_null_rows(null_fills, df):
@@ -163,9 +185,9 @@ def get_feature_null_counts(df):
     return nulls[nulls > 0]
 
 
-def get_playin_matchups(url, year):
+def get_playin_matchups(year):
     # Fetch raw HTML
-    raw_html = bs4_web_scrape(url)
+    raw_html = bs4_web_scrape(f'https://www.sports-reference.com/cbb/postseason/{year}-ncaa.html')
 
     # Used for iterating over all possible combinations of play-in regions
     playin_regions = playin_regions_list
@@ -203,9 +225,9 @@ def get_playin_matchups(url, year):
     return playin_df
 
 
-def get_tourney_matchups(url, year):
+def get_tourney_matchups(year):
     # Scrape tournament matchup data (excluding play-ins)
-    raw_html = bs4_web_scrape(url)
+    raw_html = bs4_web_scrape(f'https://www.sports-reference.com/cbb/postseason/{year}-ncaa.html')
     tourney_regions = raw_html.find_all("div", attrs={'id': 'bracket'})
     
     # Initialize DataFrame to store scraped data
@@ -243,9 +265,9 @@ def get_tourney_matchups(url, year):
     return tourney_df
 
 
-def get_hist_bracket(url, year):
-    playin_df = get_playin_matchups(url, year)
-    tourney_df = get_tourney_matchups(url, year)
+def get_hist_bracket(year):
+    playin_df = get_playin_matchups(year)
+    tourney_df = get_tourney_matchups(year)
 
     full_tourney_df = pd.concat([playin_df, tourney_df], ignore_index=True)
     return full_tourney_df

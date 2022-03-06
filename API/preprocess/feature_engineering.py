@@ -161,7 +161,7 @@ def matchups_to_underdog_relative(df):
     """
     # Get set of all features that should be made relative
     team_stat_cols = set([col.replace('_Underdog', '').replace('_Favorite', '') for col in df.columns])
-    # Exclude round, seed, and target variable from this process
+    # Exclude relevant featuers from this process
     team_stat_cols.difference_update(['Round', 'Seed', 'Conf', 'Underdog_Upset'])
 
     # Perform feature conversion

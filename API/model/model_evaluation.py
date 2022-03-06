@@ -37,7 +37,7 @@ def evaluate_cv_models(cv_models, X, y):
         DataFrame of all models' performance
     """
     # Define CV search parameters and DataFrame to store results
-    model_performance = pd.DataFrame(columns=['Mean_Accuracy', 'Mean_Accuracy_Std'])
+    model_performance = pd.DataFrame(columns=['Best_Mean_Accuracy', 'Best_Mean_Accuracy_Std'])
     cross_vals = 4
     rand_iters = 50
 

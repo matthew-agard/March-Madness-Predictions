@@ -79,7 +79,7 @@ rounds_numeric_to_str = {value:key for (key, value) in rounds_str_to_numeric.ite
 #         ratings = fetch.get_ratings_data(url=f"https://www.sports-reference.com/cbb/seasons/{year}-ratings.html")
 #         hist_rates_df = pd.concat([hist_rates_df, ratings], ignore_index=True)        
                 
-#         coaches = fetch.get_coach_data(url=f"https://www.sports-reference.com/cbb/seasons/{year}-coaches.html")
+#         coaches = fetch.get_coach_rankings_data(url=f"https://www.sports-reference.com/cbb/seasons/{year}-coaches.html")
 #         hist_coach_df = pd.concat([hist_coach_df, coaches], ignore_index=True)
         
 #         mm_games = fetch.get_hist_bracket(url=f'https://www.sports-reference.com/cbb/postseason/{year}-ncaa.html', year=year)

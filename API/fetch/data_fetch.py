@@ -114,6 +114,9 @@ def get_coach_rankings_data(year):
 
     # Prepare DataFrames
     coaches_rankings_df = pd.DataFrame(columns=['Coach_Team', 'Conf', 'Top_25', 'Coach_Start', 'MM', 'S16', 'F4', 'Champs'])
+    if year == curr_year:
+        ratings_df = get_ratings_data(year)
+        ratings_df['Team'].replace(ratings_team_to_coach_team_dict, inplace=True)
 
     # Iterate over raw data to extract coach tournament appearances HTML elements
     for i, row in enumerate(rows):
@@ -134,9 +137,10 @@ def get_coach_rankings_data(year):
                 except AttributeError:
                     pass
             else:
-                ratings_df = get_ratings_data(year)
-                ratings_df['Team'].replace(ratings_team_to_coach_team_dict, inplace=True)
-                top_25_text = ratings_df[ratings_df['Team'] == coach_team.text]['Top_25']
+                try:
+                    top_25_text = ratings_df[ratings_df['Team'] == coach_team.text]['Top_25'].item()
+                except ValueError:
+                    pass
 
             coaches_rankings_df.loc[i] = [
                 coach_team.text, conf.text, top_25_text, year_start.text, 

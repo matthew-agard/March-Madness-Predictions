@@ -22,8 +22,6 @@ The purpose of this personal project is to perform supervised classification on 
 - Fix "Compare Predictions to True Outcomes" section
 - Add EDA question for conference performance in the tournament
 - Feature Tasks:
-    - Home Wins
-    - Away Wins
     - Conference champion (found on Conf. Tour. tab)
     - Implement stepwise feature selection
 - Models:

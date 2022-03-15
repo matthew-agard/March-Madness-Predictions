@@ -20,7 +20,7 @@ the 'data_integrity' helper module, being present in your environment to run.
 
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, LabelEncoder
 from data_integrity import rounds_str_to_numeric, rounds_numeric_to_str
 
 
@@ -137,23 +137,28 @@ def records_wl_pct(df):
             try:
                 # Create W-L% feature
                 df[f'{category}_W-L%_{team}'] = df[f'{category}_W_{team}'] / (df[f'{category}_W_{team}'] + df[f'{category}_L_{team}'])
-                # Remove old points/game features to avoid linear dependency
+                # Remove loss feature to avoid potential for linear dependency
                 df.drop(f'{category}_L_{team}', axis=1, inplace=True)
             except KeyError:
                 # Catch the error if the feature was already dropped during nulls decision making
                 pass
 
 
-def encode_confs(df):
+def encode_confs(primary_df, fit_df):
     """Convert categorical conference values to numeric values
 
     Parameters
     ----------
-    df : DataFrame
-        Fully merged and cleaned tournament data
+    primary_df : DataFrame
+        Dataset to engineer; always used to transform StandardScaler()
+    fit_df : DataFrame
+        Dataset used to fit StandardScaler()
     """
-    for team in ['Favorite', 'Underdog']:
-        df['Conf_' + team] = df['Conf_' + team].astype('category').cat.codes.astype('float')
+    encoder = LabelEncoder()
+    conf_cols = ['Conf_Favorite', 'Conf_Underdog']
+
+    fit_df[conf_cols].apply(lambda col: encoder.fit(fit_df[col.name]))
+    primary_df[conf_cols] = primary_df[conf_cols].apply(lambda col: encoder.transform(primary_df[col.name]))
 
 
 def matchups_to_underdog_relative(df):
@@ -198,8 +203,9 @@ def scale_features(primary_df, fit_df):
 
     # Rescale data, then format it according to the structure of the primary DataFrame
     rescale_num = scaler.transform(primary_df.drop(['Conf_Favorite', 'Conf_Underdog'], axis=1))
-    primary_df_num = pd.DataFrame(rescale_num, index=primary_df.index, columns=fit_df_num.columns)
+    rescale_cols = primary_df.drop(['Conf_Favorite', 'Conf_Underdog'], axis=1).columns
 
+    primary_df_num = pd.DataFrame(rescale_num, index=primary_df.index, columns=rescale_cols)
     primary_df_cat = primary_df[['Conf_Favorite', 'Conf_Underdog']]
 
     full_rescale = pd.concat([primary_df_num, primary_df_cat], axis=1)

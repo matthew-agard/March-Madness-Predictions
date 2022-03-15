@@ -66,11 +66,13 @@ def merge_clean_coaches_rankings(stats_df, coaches_rankings_df):
     return all_season_stats_df
 
 
-def merge_clean_tourney_games(mm_df, all_season_df):
+def merge_clean_tourney_games(year, mm_df, all_season_df):
     """Merge all team data onto tournament matchups DataFrame
 
     Parameters
     ----------
+    year : int
+        Calendar year
     mm_df : DataFrame
         All teams' tournament matchups
     all_season_df : DataFrame
@@ -82,7 +84,7 @@ def merge_clean_tourney_games(mm_df, all_season_df):
         Completed dataset
     """
     # Replace current team names with current year's ESPN bracket team names
-    if mm_df['Year'] == curr_year:
+    if year == curr_year:
         all_season_df['School'].replace(curr_season_to_tourney_dict, inplace=True)
     # Caveat on 2011 tourney year in which applying the name changes to UAB would cause data loss
     else:

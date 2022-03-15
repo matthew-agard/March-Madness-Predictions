@@ -133,7 +133,7 @@ def hist_tournament_games(year, all_stats):
     # Clean & merge regular season data to tournament games (if they exist for given year)
     if not mm_games_df.empty:
         clean_mm_df = clean_tourney_data(mm_games_df, clean_all_season_stats_df)
-        mm_data_df = merge_clean_tourney_games(clean_mm_df, clean_all_season_stats_df)
+        mm_data_df = merge_clean_tourney_games(year, clean_mm_df, clean_all_season_stats_df)
     else:
         mm_data_df = pd.DataFrame()
 
@@ -168,7 +168,7 @@ def dataset_pipeline(years):
     return all_data_df
 
 
-def feature_pipeline(primary_df, fit_df, basic_stats_cols):
+def feature_pipeline(dataset_type, data_cuts, basic_stats_cols):
     """Engineer features for complete dataset
 
     Parameters
@@ -183,6 +183,10 @@ def feature_pipeline(primary_df, fit_df, basic_stats_cols):
     full_feature_df : DataFrame
         Complete dataset with re-engineered features
     """
+    all_data_df = data_cuts['FULL']
+    primary_df = data_cuts[dataset_type]
+    fit_df = data_cuts['TRAIN']
+
     # Reclassify the 'Round' feature accordingly (if it's even present)
     try:
         bidirectional_rounds_str_numeric(primary_df)
@@ -196,9 +200,9 @@ def feature_pipeline(primary_df, fit_df, basic_stats_cols):
     records_wl_pct(primary_df)
 
     # Convert categorical conference values to numeric values
-    encode_confs(primary_df)
+    encode_confs(primary_df, fit_df=all_data_df)
 
-    # Convert favorite-underdog features to a single class of underdog relative feature
+    # Convert favorite-underdog features to a single class of underdog relative feature (for primary & fit df's)
     matchups_to_underdog_relative(primary_df)
 
     # 'Center the data' for all numerical features; improves models' signal processing abilities
@@ -207,11 +211,14 @@ def feature_pipeline(primary_df, fit_df, basic_stats_cols):
     return full_feature_df
 
 
-def round_pipeline(curr_round, all_curr_matchups, curr_season_basic_df, clean_curr_season_data, fit_df, null_drops):
+def round_pipeline(year, curr_round, all_curr_matchups, 
+                    curr_season_basic_df, clean_curr_season_data, data_cuts, null_drops):
     """Generate a round to be used for in the creation of an entire bracket
 
     Parameters
     ----------
+    year : int
+        Calendar year
     curr_round : int
         Tournament/Bracket round
     all_curr_matchups : list
@@ -245,7 +252,7 @@ def round_pipeline(curr_round, all_curr_matchups, curr_season_basic_df, clean_cu
     cleaned_generated_round = clean_tourney_data(generated_round, clean_curr_season_data)
 
     # Merge all team season data to teams in matchups
-    all_round_data = merge_clean_tourney_games(cleaned_generated_round, clean_curr_season_data)
+    all_round_data = merge_clean_tourney_games(year, cleaned_generated_round, clean_curr_season_data)
 
     # Store appropriate data for bracket DataFrame creation
     teams = ['Team_Favorite', 'Team_Underdog']
@@ -254,12 +261,14 @@ def round_pipeline(curr_round, all_curr_matchups, curr_season_basic_df, clean_cu
 
     # Prepare DataFrame for prediction via feature pipeline preprocessing
     all_round_data.drop(teams + null_drops, axis=1, inplace=True)
-    curr_X = feature_pipeline(all_round_data, fit_df, curr_season_basic_df.columns)
+    data_cuts['PREDICT'] = all_round_data
+
+    curr_X = feature_pipeline('PREDICT', data_cuts, curr_season_basic_df.columns)
 
     return all_round_data, curr_X, school_matchups_df
 
 
-def bracket_pipeline(year, play_in, first_round, model, fit_df, null_drops):
+def bracket_pipeline(year, play_in, first_round, model, indices, null_drops):
     """Generate a bracket as a prediction of the current year's tournament
 
     Parameters
@@ -292,8 +301,8 @@ def bracket_pipeline(year, play_in, first_round, model, fit_df, null_drops):
 
     for curr_round in range(7):
         # Get all data needed for current generated/selected round    
-        all_round_data, curr_X, school_matchups_df = round_pipeline(curr_round, all_curr_matchups, curr_season_basic_df,
-                                                                    clean_curr_season_data, fit_df, null_drops)
+        all_round_data, curr_X, school_matchups_df = round_pipeline(year, curr_round, all_curr_matchups, curr_season_basic_df,
+                                                                    clean_curr_season_data, indices, null_drops)
         # Create predictions
         school_matchups_df['Underdog_Upset'] = model_predictions(model, curr_X)
         

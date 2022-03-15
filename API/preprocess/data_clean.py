@@ -38,17 +38,20 @@ def clean_basic_stats(df):
     ncaa_df : DataFrame
         All basic regular reason data for March Madness teams
     """
-    # Remove fake, linearly dependent, and unwanted stat features
+    # Remove fake and linearly dependent features
     fake_feats = ['Rk', 'MP'] + [col for col in df.columns if ('Unnamed' in col)]
     lin_dep_feats = ['L', 'SOS', 'Tm.', 'Opp.', 'FGA', '3PA', 'FTA']
-    unwanted_feats = [col for col in df.columns if ('.2' in col) or ('.3' in col)]
 
-    df.drop(fake_feats + lin_dep_feats + unwanted_feats, axis=1, inplace=True)
+    df.drop(fake_feats + lin_dep_feats, axis=1, inplace=True)
 
-    # Rename conference record columns (to be later used for stat features)
+    # Rename team record columns (to be later used for stat features)
     df.rename(columns = {
         'W.1': 'Conf_W',
         'L.1': 'Conf_L',
+        'W.2': 'Home_W',
+        'L.2': 'Home_L',
+        'W.3': 'Away_W',
+        'L.3': 'Away_L',
     }, inplace=True)
 
     # Remove useless rows used in table formatting

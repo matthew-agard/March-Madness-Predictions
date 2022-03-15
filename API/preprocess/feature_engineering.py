@@ -6,7 +6,7 @@ The following functions are present:
     * totals_to_game_average
     * create_faves_underdogs
     * bidirectional_rounds_str_numeric
-    * conf_wl_pct
+    * records_wl_pct
     * encode_confs
     * matchups_to_underdog_relative
     * scale_features
@@ -124,19 +124,24 @@ def totals_to_game_average(all_season_df, season_basic_cols):
                     pass
 
 
-def conf_wl_pct(df):
-    """Convert regular season conference record to a percentage
+def records_wl_pct(df):
+    """Convert regular season records (conference, home, away) to win-loss percentages
 
     Parameters
     ----------
     df : DataFrame
         Fully merged and cleaned tournament data
     """
-    # Perform feature conversion
     for team in ['Favorite', 'Underdog']:
-        df['Conf_W-L%_' + team] = df['Conf_W_' + team] / (df['Conf_W_' + team] + df['Conf_L_' + team])
-        # Remove old points/game features to avoid linear dependency
-        df.drop('Conf_L_' + team, axis=1, inplace=True)
+        for category in ['Conf', 'Home', 'Away']:
+            try:
+                # Create W-L% feature
+                df[f'{category}_W-L%_{team}'] = df[f'{category}_W_{team}'] / (df[f'{category}_W_{team}'] + df[f'{category}_L_{team}'])
+                # Remove old points/game features to avoid linear dependency
+                df.drop(f'{category}_L_{team}', axis=1, inplace=True)
+            except KeyError:
+                # Catch the error if the feature was already dropped during nulls decision making
+                pass
 
 
 def encode_confs(df):

@@ -10,7 +10,10 @@ Requires a minimum of the 'pandas' library being present in your environment to 
 """
 
 import pandas as pd
-from data_integrity import season_team_to_coach_team_dict, coach_team_to_mm_team_dict
+from datetime import datetime
+from data_integrity import season_team_to_coach_team_dict, coach_team_to_mm_team_dict, curr_season_to_tourney_dict
+
+curr_year = datetime.now().year
 
 
 def merge_clean_team_stats(basic_df, adv_df):
@@ -78,10 +81,15 @@ def merge_clean_tourney_games(mm_df, all_season_df):
     all_data_df : DataFrame
         Completed dataset
     """
+    # Replace current team names with current year's ESPN bracket team names
+    if mm_df['Year'] == curr_year:
+        all_season_df['School'].replace(curr_season_to_tourney_dict, inplace=True)
     # Caveat on 2011 tourney year in which applying the name changes to UAB would cause data loss
-    if not mm_df['Team_Favorite'].str.contains('UAB').any():
-        # Change team names accordingly to ensure successful merging with team stats
-        all_season_df['School'].replace(coach_team_to_mm_team_dict, inplace=True)
+    else:
+        if (not mm_df['Team_Favorite'].str.contains('UAB').any() 
+            and not mm_df['Team_Underdog'].str.contains('UAB').any()):
+            # Change team names accordingly to ensure successful merging with team stats
+            all_season_df['School'].replace(coach_team_to_mm_team_dict, inplace=True)
 
     # Merge favorites' season data onto tournament matchups DataFrame
     favorites_data_df = pd.merge(mm_df, all_season_df, 

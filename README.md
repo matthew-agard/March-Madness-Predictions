@@ -32,5 +32,10 @@ The purpose of this personal project is to perform supervised classification on 
     - Hinge Loss
     - Etc...
 - start_bracket_from_round() functionality; could be used to overwrite predictions and recreate bracket from there
-- Productionize model to the cloud (AWS, GCP, Azure)
+- Productionize model to AWS cloud; brainstorm services to use
+    - S3
+    - Lambda
+    - Glue
+    - Athena/Redshift
+    - SageMaker
 - Flesh out README "Setup" section

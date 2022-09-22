@@ -67,29 +67,23 @@ def get_ratings_data(year):
         Curated data points read into a DataFrame
     """
     # Fetch raw HTML and scrape its data
-    raw_html = bs4_web_scrape(f"https://www.sports-reference.com/cbb/seasons/{year}-ratings.html")
-    table = raw_html.find("table", attrs={"id": "ratings"})
+    raw_html = bs4_web_scrape(f"https://www.sports-reference.com/cbb/seasons/{year}-polls.html")
+    table = raw_html.find("table", attrs={"id": "ap-polls"})
     rows = table.find_all("tr")
 
     # Prepare DataFrame
-    ratings_df = pd.DataFrame(columns=['Team', 'Top_25'])
+    ratings_df = pd.DataFrame(columns=['Top_25_Team'])
 
     # Iterate over raw data to extract team and rank HTML elements
     for i, row in enumerate(rows):
-        if row.find('a'):
-            # Get team name
-            team = row.find('a')
+        try:
+            latest_rating = row.find_all("td")[-1]
+            team_name = row.find("a")
 
-            # Get team simple rating system (SRS) value
-            rank = row.find("td", attrs={"data-stat": "ap_rank"})
-
-            # Get Top 25 team status using ternary operator to produce binary output
-            try:
-                rank_text = 1 if (rank.text != '') else 0
-            except AttributeError:
-                pass
-
-            ratings_df.loc[i] = [team.text, rank_text]
+            if latest_rating.text != '':
+                ratings_df.loc[i] = [team_name.text]
+        except IndexError:
+            pass
 
     return ratings_df
 
@@ -114,36 +108,24 @@ def get_coach_rankings_data(year):
 
     # Prepare DataFrames
     coaches_rankings_df = pd.DataFrame(columns=['Coach_Team', 'Conf', 'Top_25', 'Coach_Start', 'MM', 'S16', 'F4', 'Champs'])
-    if year == curr_year:
-        ratings_df = get_ratings_data(year)
-        ratings_df['Team'].replace(ratings_team_to_coach_team_dict, inplace=True)
+
+    ratings_df = get_ratings_data(year)
+    ratings_df['Top_25_Team'].replace(ratings_team_to_coach_team_dict, inplace=True)
 
     # Iterate over raw data to extract coach tournament appearances HTML elements
     for i, row in enumerate(rows):
         if(row.find('a')):
             coach_team = row.find_all('a')[1]
             conf = row.find("td", attrs={"data-stat": "conference"})
+            top_25 = 1 if coach_team.text in ratings_df['Top_25_Team'].values else 0
             year_start = row.find("td", attrs={"data-stat": "since"})
             mm_apps = row.find("td", attrs={"data-stat": "ncaa_car"})
             sw16_apps = row.find("td", attrs={"data-stat": "sw16_car"})
             f4_apps = row.find("td", attrs={"data-stat": "ff_car"})
-            champ_wins = row.find("td", attrs={"data-stat": "champ_car"})
-            
-            if year != curr_year:
-                top_25 = row.find("td", attrs={"data-stat": "ap_post"})
-
-                try:
-                    top_25_text = 1 if (top_25.text != '') else 0
-                except AttributeError:
-                    pass
-            else:
-                try:
-                    top_25_text = ratings_df[ratings_df['Team'] == coach_team.text]['Top_25'].item()
-                except ValueError:
-                    pass
+            champ_wins = row.find("td", attrs={"data-stat": "champ_car"})          
 
             coaches_rankings_df.loc[i] = [
-                coach_team.text, conf.text, top_25_text, year_start.text, 
+                coach_team.text, conf.text, top_25, year_start.text, 
                 mm_apps.text, sw16_apps.text, f4_apps.text, champ_wins.text
             ]
 

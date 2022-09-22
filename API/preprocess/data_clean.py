@@ -54,11 +54,8 @@ def clean_basic_stats(df):
         'L.3': 'Away_L',
     }, inplace=True)
 
-    # Remove useless rows used in table formatting
-    df = df[(df['School'] != 'School') & (df['G'] != 'Overall')]
-
     # Filter out teams that didn't participate in March Madness tournament
-    ncaa_df = df[df['School'].str.contains('NCAA')]
+    ncaa_df = df[df['School'].str.contains('NCAA', na=False)]
 
     return ncaa_df
 
@@ -73,11 +70,16 @@ def clean_adv_stats(df):
 
     Returns
     -------
-    DataFrame
+    ncaa_df : DataFrame
         All advanced regular reason data for March Madness teams
     """
     # Filter out redundant features already captured from basic stats web scraping
-    return pd.concat([df['School'], df.iloc[:, -13:]], axis=1)
+    df = pd.concat([df['School'], df.iloc[:, -13:]], axis=1)
+    
+    # Filter out teams that didn't participate in March Madness tournament
+    ncaa_df = df[df['School'].str.contains('NCAA', na=False)]
+
+    return ncaa_df
 
 
 def clean_coach_ranking_stats(coach_df):

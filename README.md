@@ -19,12 +19,11 @@ The purpose of this personal project is to perform supervised classification on 
 ...also in the works...
 
 # TODO
+- Download old 2022 notebook for most accurate post-tournament analysis
 - Fix "Compare Predictions to True Outcomes" section
 - Add EDA question for conference performance in the tournament
-- Rewrite data_fetch code to fetch current bracket from sportsreference (potentially 2023-beta)
 - Feature Tasks:
-    - Conference champion (found on Conf. Tour. tab)
-    - Implement stepwise feature selection
+    - Rewrite data_fetch code to fetch current bracket from sportsreference (potentially 2023-beta)
 - Models:
     - Neural Network
 - Metrics

@@ -19,9 +19,8 @@ The purpose of this personal project is to perform supervised classification on 
 ...also in the works...
 
 # TODO
-- Download old 2022 notebook for most accurate post-tournament analysis
-- Fix "Compare Predictions to True Outcomes" section
-- Add EDA question for conference performance in the tournament
+- Fix "Compare Predictions to True Outcomes" section (2021 & 2022 notebooks)
+- Add EDA question for conferences' historical performance in the tournament
 - Feature Tasks:
     - Rewrite data_fetch code to fetch current bracket from sportsreference (potentially 2023-beta)
 - Models:

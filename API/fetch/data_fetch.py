@@ -19,12 +19,8 @@ Requires a minimum of the 'pandas' and 're' libraries, as well as the 'web_scrap
 import pandas as pd
 import numpy as np
 import re
-from datetime import datetime
 from merge_fetch import ratings_team_to_coach_team_dict, playin_regions_list, merge_raw_tourney_games
 from web_scraper_types import bs4_web_scrape, pandas_web_scrape, bracket_web_scrape
-
-curr_year = datetime.now().year
-
 
 def get_team_data(url, attrs, header=1):
     """Fetch team data (season stats, historical tournament performance)

@@ -50,7 +50,7 @@ season_team_to_coach_team_dict = {
 
 coach_team_to_mm_team_dict = {
      'UAB': 'Alabama-Birmingham',
-     'UT Arlington': 'Texas-Arlington',
+     # 'UT Arlington': 'Texas-Arlington',
 }
 
 curr_season_to_tourney_dict = {

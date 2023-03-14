@@ -78,7 +78,7 @@ rounds_numeric_to_str = {value:key for (key, value) in rounds_str_to_numeric.ite
 #     hist_stats_df, hist_coach_ranks_df, hist_games_df = pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
 
 #     for year in range(start_year, curr_year):
-#         stats = fetch.get_team_data(url=f"https://www.sports-reference.com/cbb/seasons/{year}-school-stats.html",
+#         stats = fetch.get_team_data(url=f"https://www.sports-reference.com/cbb/seasons/men/{year}-school-stats.html",
 #                                      attrs={'id': 'basic_school_stats'})
 #         hist_stats_df = pd.concat([hist_stats_df, stats], ignore_index=True)        
 

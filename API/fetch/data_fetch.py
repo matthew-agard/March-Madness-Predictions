@@ -63,7 +63,7 @@ def get_ratings_data(year):
         Curated data points read into a DataFrame
     """
     # Fetch raw HTML and scrape its data
-    raw_html = bs4_web_scrape(f"https://www.sports-reference.com/cbb/seasons/{year}-polls.html")
+    raw_html = bs4_web_scrape(f"https://www.sports-reference.com/cbb/seasons/men/{year}-polls.html")
     table = raw_html.find("table", attrs={"id": "ap-polls"})
     rows = table.find_all("tr")
 
@@ -98,7 +98,7 @@ def get_coach_rankings_data(year):
         Curated data points read into a DataFrame
     """
     # Fetch raw HTML and scrape its data
-    raw_html = bs4_web_scrape(f"https://www.sports-reference.com/cbb/seasons/{year}-coaches.html")
+    raw_html = bs4_web_scrape(f"https://www.sports-reference.com/cbb/seasons/men/{year}-coaches.html")
     table = raw_html.find("table", attrs={"id": "coaches"})
     rows = table.find_all("tr")
 

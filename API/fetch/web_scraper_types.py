@@ -6,13 +6,14 @@ The following functions are present:
     * bs4_web_scrape
     * bracket_web_scrape
 
-Requires a minimum of the 'pandas', 'requests', and 'BeautifulSoup' 
-libraries being present  in your environment to run.
+Requires a minimum of the 'pandas', 'requests', 'BeautifulSoup' 
+and 'time' libraries being present  in your environment to run.
 """
 
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+from time import sleep
 
 
 def pandas_web_scrape(url, attrs, header):
@@ -34,6 +35,10 @@ def pandas_web_scrape(url, attrs, header):
     """
     # Configure scraper and get table data
     arr = pd.read_html(url, attrs=attrs, header=header)
+
+    # 3 second delay (request rate limit)
+    sleep(3)
+
     return arr
 
 
@@ -56,6 +61,9 @@ def bs4_web_scrape(url):
     page = requests.get(url)
     soup = BeautifulSoup(page.text, "html.parser")
 
+    # 3 second delay (request rate limit)
+    sleep(3)
+
     return soup
 
 
@@ -77,6 +85,9 @@ def bracket_web_scrape(url, attrs):
     # Configure scraper
     page = requests.get(url)
     soup = BeautifulSoup(page.text, "html.parser")
+
+    # 3 second delay (request rate limit)
+    sleep(3)
 
     # Find bracket and get its data
     bracket = soup.find("div", attrs=attrs)

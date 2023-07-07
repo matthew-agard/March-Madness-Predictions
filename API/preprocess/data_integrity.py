@@ -54,12 +54,10 @@ coach_team_to_mm_team_dict = {
 }
 
 curr_season_to_tourney_dict = {
-     'Cal State Fullerton': 'CSU Fullerton',
-     'Loyola (IL)': 'Loyola Chicago',
-     'Miami (FL)': 'Miami',
-     'UNC': 'North Carolina',
-     "St. Peter's": "Saint Peter's",
-     'Texas A&M-Corpus Christi': 'Texas A&M-CC',
+     'Louisiana Lafayette': 'Lafayette',
+     'Miami FL': 'Miami',
+     'USC': 'Southern California',
+     "VCU": "Virginia Commonwealth",
 }
 
 rounds_str_to_numeric = {

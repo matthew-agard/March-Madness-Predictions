@@ -226,11 +226,7 @@ def get_tourney_matchups(year):
         teams_scores_list = [data.text for data in teams_scores if ("at ") not in data.text][:-1]
         
         # If the condition below is met, teams_scores_list must contain Final Four data
-        if len(teams_scores_list) == 12:
-            # Initialize rounds_list accordingly
-            rounds_list = (['Final Four'] * 2) + ['National Championship']
-        # If the condition below is met, teams_scores_list must contain regional data
-        else:
+        if len(teams_scores_list) == 60:
             # We can expect len(teams_scores_list) == 60 when regional data is present.
             # The only exception to this rule is 2021, where COVID caused the cancellation of 1 game.
             if (year == 2021) and (len(teams_scores_list) != 60):
@@ -239,6 +235,19 @@ def get_tourney_matchups(year):
                 teams_scores_list.insert(27, "0")
             # Initialize rounds_list accordingly
             rounds_list = (['First Round'] * 8) + (['Second Round'] * 4) + (['Sweet Sixteen'] * 2) + ['Elite Eight']
+        # If the condition below is met, teams_scores_list must contain Final Four data
+        else:
+            # We can expect len(teams_scores_list) == 12 when Final Four data is present.
+            # The only exception to this rule is 2023, where sportsreference improperly recorded tourney data.
+            if (year == 2023):
+                # Insert missing seed from sportsreference
+                seeds_list.append("4")
+                # Insert missing team & scores from sportsreference
+                teams_scores_list.append("59")
+                teams_scores_list.append("UConn")
+                teams_scores_list.append("76")
+            # Initialize rounds_list accordingly
+            rounds_list = (['Final Four'] * 2) + ['National Championship']
 
         games_df = merge_raw_tourney_games(year, seeds_list, teams_scores_list, rounds_list)
         # Concatenate all regional DataFrames into a single DataFrame

@@ -54,10 +54,9 @@ coach_team_to_mm_team_dict = {
 }
 
 curr_season_to_tourney_dict = {
-     'Louisiana Lafayette': 'Lafayette',
-     'Miami FL': 'Miami',
-     'USC': 'Southern California',
-     "VCU": "Virginia Commonwealth",
+     "Connecticut": "UConn",
+     'Miami FL': 'Miami (FL)',
+     "Louisiana Lafayete": "Louisiana",
 }
 
 rounds_str_to_numeric = {

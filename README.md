@@ -11,28 +11,20 @@ https://www.gobankingrates.com/money/business/money-behind-march-madness-ncaa-ba
 
 The purpose of this personal project is to perform supervised classification on March Madness data to more accurately predict the outcome of an NCAA tournament games--particularly the occurrence of upsets. This would allow for an increased possibility of yielding the kinds of profits mentioned above by filling out more accurate brackets relative to other participants.
 
-# Setup
-### Environment
-...in the works...
-
-### Run Notebook
-...also in the works...
-
 # TODO
 - Add EDA question for conferences' historical performance in the tournament
 - Feature Tasks:
     - Rewrite data_fetch code to fetch current bracket from sportsreference (potentially 2023-beta)
+    - Explore potential use of removed null features in model predictions
 - Models:
     - Neural Network
-- Metrics
+- Metrics:
     - Log Loss
     - Hinge Loss
-    - Etc...
-- start_bracket_from_round() functionality; could be used to overwrite predictions and recreate bracket from there
+    - Etc... (research more ideas)
 - Productionize model to AWS cloud; brainstorm services to use
     - S3
     - Lambda
     - Glue
     - Athena/Redshift
     - SageMaker
-- Flesh out README "Setup" section

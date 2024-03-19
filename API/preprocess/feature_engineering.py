@@ -64,17 +64,21 @@ def create_faves_underdogs(mm_df, season_df):
 
         # Seeds are equivalent
         else:
-            # Get regular season win percentage for both teams
-            team_win_pct = float(season_df[season_df['School'] == data['Team']]['W-L%'])
-            team1_win_pct = float(season_df[season_df['School'] == data['Team.1']]['W-L%'])
-            
-            # Whoever has the better record is the favorite, else they're the underdog; populate corresponding arrays
-            if team_win_pct > team1_win_pct:
-                underdogs.append(team1_arr)
-                faves.append(team_arr)
-            else:
-                underdogs.append(team_arr)
-                faves.append(team1_arr)
+            try:
+                # Get regular season win percentage for both teams
+                team_win_pct = float(season_df[season_df['School'] == data['Team']]['W-L%'])
+                team1_win_pct = float(season_df[season_df['School'] == data['Team.1']]['W-L%'])
+                
+                # Whoever has the better record is the favorite, else they're the underdog; populate corresponding arrays
+                if team_win_pct > team1_win_pct:
+                    underdogs.append(team1_arr)
+                    faves.append(team_arr)
+                else:
+                    underdogs.append(team_arr)
+                    faves.append(team1_arr)
+            except TypeError:
+                print(season_df['School'], "\t", data['Team'], "\t", data['Team.1'])
+                continue
 
     # Return favorite-underdogs arrays as a single dictionary, referenced by their corresponding key
     faves_unds = {

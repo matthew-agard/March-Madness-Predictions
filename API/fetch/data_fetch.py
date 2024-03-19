@@ -17,7 +17,6 @@ Requires a minimum of the 'pandas' and 're' libraries, as well as the 'web_scrap
 """
 
 import pandas as pd
-import re
 from merge_fetch import ratings_team_to_coach_team_dict, playin_regions_list, merge_raw_tourney_games
 from web_scraper_types import bs4_web_scrape, pandas_web_scrape
 
@@ -178,7 +177,7 @@ def get_playin_matchups(year):
     seeds_list, teams_scores_list = [], []
 
     for pi_class in playin_classes:
-        for i, playin_region in enumerate(playin_regions):
+        for playin_region in playin_regions:
             # Scrape all bracket data
             bracket_raw = raw_html.find("div", attrs={'id': playin_region, 'class': pi_class})
 
@@ -215,7 +214,7 @@ def get_tourney_matchups(year):
     tourney_df = pd.DataFrame()
 
     # Iterate over all 4 tournament regions and Final Four
-    for i, tourney_region in enumerate(tourney_regions):
+    for tourney_region in tourney_regions:
         # Get all teams' seeds
         seeds = tourney_region.find_all("span")
         seeds_list = [data.text for data in seeds if ("at ") not in data.text][:-1]

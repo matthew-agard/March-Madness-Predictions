@@ -25,7 +25,7 @@ from feature_engineering import create_faves_underdogs, bidirectional_rounds_str
 curr_year = datetime.now().year
 
 
-def clean_basic_stats(year, df):
+def clean_basic_stats(df):
     """Clean standard regular season stats
 
     Parameters
@@ -54,13 +54,14 @@ def clean_basic_stats(year, df):
         'L.3': 'Away_L',
     }, inplace=True)
 
-    # Filter out teams that didn't participate in March Madness tournament
-    ncaa_df = df[df['School'].str.contains('NCAA', na=False)] if (year != curr_year) else df
+    # Filter out teams that didn't participate in March Madness tournament (if possible)
+    if df['School'].str.contains('NCAA').any():
+        df = df[df['School'].str.contains('NCAA', na=False)]
 
-    return ncaa_df
+    return df
 
 
-def clean_adv_stats(year, df):
+def clean_adv_stats(df):
     """Clean advanced regular season stats
 
     Parameters
@@ -76,10 +77,11 @@ def clean_adv_stats(year, df):
     # Filter out redundant features already captured from basic stats web scraping
     df = pd.concat([df['School'], df.iloc[:, -13:]], axis=1)
 
-    # Filter out teams that didn't participate in March Madness tournament
-    ncaa_df = df[df['School'].str.contains('NCAA', na=False)] if (year != curr_year) else df
+    # Filter out teams that didn't participate in March Madness tournament (if possible)
+    if df['School'].str.contains('NCAA').any():
+        df = df[df['School'].str.contains('NCAA', na=False)]
 
-    return ncaa_df
+    return df
 
 
 def clean_coach_ranking_stats(coach_df):

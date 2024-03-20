@@ -47,12 +47,12 @@ def regular_season_stats(year):
     # Fetch & clean basic regular season stats
     season_basic_df = get_team_data(url=f"https://www.sports-reference.com/cbb/seasons/men/{year}-school-stats.html",
                                     attrs={'id': 'basic_school_stats'})
-    clean_season_basic_df = clean_basic_stats(year, season_basic_df)
+    clean_season_basic_df = clean_basic_stats(season_basic_df)
     
     # Fetch & clean advanced regular season stats
     season_adv_df = get_team_data(url=f"https://www.sports-reference.com/cbb/seasons/men/{year}-advanced-school-stats.html", 
                                 attrs={'id': 'adv_school_stats'})
-    clean_season_adv_df = clean_adv_stats(year, season_adv_df)
+    clean_season_adv_df = clean_adv_stats(season_adv_df)
 
     # Merge all cleaned regular season stats
     clean_reg_season_df = merge_clean_team_stats(clean_season_basic_df, clean_season_adv_df)

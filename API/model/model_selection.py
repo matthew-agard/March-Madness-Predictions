@@ -107,8 +107,8 @@ def init_xgb():
         'n_estimators': np.arange(150, 301, 25),
         'learning_rate': [0.01, 0.025, 0.05, 0.1],
         'subsample': np.arange(0.4, 0.7, 0.1),
-        'tree_method': ['hist'], # TODO: Troubleshoot 'gpu_hist' use if GPU is available
-        # 'sampling_method': ['gradient_based'],
+        'tree_method': ['gpu_hist'],
+        'sampling_method': ['gradient_based'],
         'lambda': [100],
         'eval_metric': ['error'],
         'verbosity': [0],

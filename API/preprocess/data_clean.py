@@ -19,7 +19,7 @@ and 'feature_engineering' helper modules, being present in your environment to r
 
 import pandas as pd
 from datetime import datetime
-from data_integrity import curr_season_to_tourney_dict
+from data_integrity import season_team_to_coach_tourney_team_dict
 from feature_engineering import create_faves_underdogs, bidirectional_rounds_str_numeric, create_target_variable
 
 curr_year = datetime.now().year
@@ -126,7 +126,7 @@ def clean_merged_season_stats(year, all_season_df):
 
     # Change team names when necessary to ensure successful merging with tournament matchups
     if (year == curr_year):
-        all_season_df['School'].replace(curr_season_to_tourney_dict, inplace=True)
+        all_season_df['School'].replace(season_team_to_coach_tourney_team_dict, inplace=True)
 
     return all_season_df
 

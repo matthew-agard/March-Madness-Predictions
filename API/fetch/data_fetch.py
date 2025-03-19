@@ -272,13 +272,13 @@ def get_current_bracket(year):
         seeds = matchups.find_all("span")
         seeds_list = [data.text for data in seeds if ("at ") not in data.text]
         # Clean First Four team seeds; will need to be manually added to CSV
-        seeds_list = [int(seed) if seed != '' else 0 for seed in seeds_list]
+        seeds_list = [int(seed) if seed and seed.lower() != 'tbd' else 0 for seed in seeds_list]
         
         # Get all teams' names
         teams = matchups.find_all("a")
         teams_list = [data.text for data in teams if ("at ") not in data.text]
         # Clean First Four team names; will need to be manually added to CSV
-        teams_list = [team if team != 'Play-In' else None for team in teams_list]
+        teams_list = [team if team not in ['Play-In', 'tbd'] else None for team in teams_list]
 
         # Read team matchups into dataframe
         for j in range(0, len(teams_list), 2):

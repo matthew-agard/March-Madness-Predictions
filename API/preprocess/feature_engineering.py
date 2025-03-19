@@ -241,9 +241,13 @@ def create_bracket_round(prev_round):
         # Append a single winner to the initialized list
         winners.append([winner_seed, winner_team])
 
-    # Reshape the n winners into n/2 matchups for a DataFrame of the subsequent round
-    winners = np.array(winners).reshape((len(winners) // 2), 4)
-    next_round = pd.DataFrame(winners, columns=['Seed', 'Team', 'Seed.1', 'Team.1'])
+    try:
+        # Reshape the n winners into n/2 matchups for a DataFrame of the subsequent round
+        winners = np.array(winners).reshape((len(winners) // 2), 4)
+        next_round = pd.DataFrame(winners, columns=['Seed', 'Team', 'Seed.1', 'Team.1'])
+    except ValueError:
+        print(winners)
+        raise SystemExit
 
     return next_round
 

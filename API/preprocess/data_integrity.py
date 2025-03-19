@@ -5,7 +5,7 @@ This script stores lists and dictionaries used in the data_fetch, data_clean, an
 No functions are present, and no libraries or modules are required.
 """
 
-season_team_to_coach_team_dict = {
+season_team_to_coach_tourney_team_dict = {
      'Brigham Young': 'BYU',
      'Cal State Long Beach': 'Long Beach State',
      'Central Connecticut State': 'Central Connecticut',
@@ -43,6 +43,7 @@ season_team_to_coach_team_dict = {
      'Texas-San Antonio': 'UTSA',
      'UC Davis': 'UC-Davis',
      'UC Irvine': 'UC-Irvine',
+     'UC San Diego': 'UC-San Diego',
      'UC Santa Barbara': 'UCSB',
      'University of California': 'California',
      'Virginia Commonwealth': 'VCU',
@@ -51,8 +52,6 @@ season_team_to_coach_team_dict = {
 coach_team_to_mm_team_dict = {
      'UAB': 'Alabama-Birmingham',
 }
-
-curr_season_to_tourney_dict = {}
 
 rounds_str_to_numeric = {
      'Play-In': 0,

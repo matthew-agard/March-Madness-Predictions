@@ -118,11 +118,8 @@ def clean_merged_season_stats(year, all_season_df):
         Cleaned regular season dataset, ready for merging with tournament matchup data
     """
     # Convert all numeric datatypes to from str to float
-    for i in range(1, len(all_season_df.columns)):
-        try:
-            all_season_df.iloc[:, i] = all_season_df.iloc[:, i].astype(float)
-        except ValueError:
-            pass
+    for col in all_season_df.columns:
+        all_season_df[col] = pd.to_numeric(all_season_df[col], errors='ignore')
 
     # Change team names when necessary to ensure successful merging with tournament matchups
     if (year == curr_year):

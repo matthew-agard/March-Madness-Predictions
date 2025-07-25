@@ -1,0 +1,11 @@
+pandas
+numpy
+lxml
+matplotlib
+scikit-learn
+requests
+bs4
+xgboost
+IPython
+ipykernel
+jupyter

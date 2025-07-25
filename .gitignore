@@ -1,2 +1,6 @@
+# Virtual env
+.venv/
+
+# File metadata
 **__pycache__
 **.ipynb_checkpoints

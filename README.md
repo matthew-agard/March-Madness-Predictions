@@ -11,6 +11,20 @@ https://www.gobankingrates.com/money/business/money-behind-march-madness-ncaa-ba
 
 The purpose of this personal project is to perform supervised classification on March Madness data to more accurately predict the outcome of an NCAA tournament games--particularly the occurrence of upsets. This would allow for an increased possibility of yielding the kinds of profits mentioned above by filling out more accurate brackets relative to other participants.
 
+# Setup
+### Prerequisites
+- Python 3.11
+- NVIDIA CUDA Toolkit 12
+
+### Instructions
+- Clone the repository to your local machine
+- Create a virtual environment `.venv` (`python -m venv .venv`) at the root of the project directory
+- Activate your virtual environment (`source .venv/Scripts/activate`)
+- Install project dependencies (`pip install -r requirements.txt`)
+- Execute the Jupyter notebook found in the latest year's directory to obtain your tournament predictions
+    - NOTE: Due to a lack of backwards API compatibility, only the latest year's notebook is guaranteed to run successfully using the API
+    - Should you choose to experiment with prior years, version tags are available (e.g. `v1.2021`) to provide snapshots of the API code at the point-in-time of the given's year successful notebook execution.
+
 # TODO
 - Add EDA question for conferences' historical performance in the tournament
 - Feature Tasks:

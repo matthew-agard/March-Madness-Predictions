@@ -26,9 +26,7 @@ The purpose of this personal project is to perform supervised classification on 
     - Should you choose to experiment with prior years, version tags are available (e.g. `v1.2021`) to provide snapshots of the API code at the point-in-time of the given's year successful notebook execution.
 
 # TODO
-- Add EDA question for conferences' historical performance in the tournament
 - Feature Tasks:
-    - Rewrite data_fetch code to fetch current bracket from sportsreference (potentially 2023-beta)
     - Explore potential use of removed null features in model predictions
 - Models:
     - Neural Network

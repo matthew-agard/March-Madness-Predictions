@@ -1,0 +1,68 @@
+Seed_Favorite,Team_Favorite,Seed_Underdog,Team_Underdog,Round,Underdog_Upset,Winner
+16,Norfolk State,16,Appalachian State,Play-In,1,Appalachian State
+11,Drake,11,Wichita State,Play-In,0,Drake
+16,Texas Southern,16,Mount St. Mary's,Play-In,1,Mount St. Mary's
+11,UCLA,11,Michigan State,Play-In,0,UCLA
+1,Gonzaga,16,Appalachian State,First Round,0,Gonzaga
+8,Oklahoma,9,Missouri,First Round,0,Oklahoma
+5,Creighton,12,UC Santa Barbara,First Round,0,Creighton
+4,Virginia,13,Ohio,First Round,0,Virginia
+6,Southern California,11,Drake,First Round,0,Southern California
+3,Kansas,14,Eastern Washington,First Round,0,Kansas
+7,Oregon,10,Virginia Commonwealth,First Round,0,Oregon
+2,Iowa,15,Grand Canyon,First Round,0,Iowa
+1,Michigan,16,Mount St. Mary's,First Round,0,Michigan
+8,Louisiana State,9,St. Bonaventure,First Round,0,Louisiana State
+5,Colorado,12,Georgetown,First Round,0,Colorado
+4,Florida State,13,UNC Greensboro,First Round,1,UNC Greensboro
+6,Brigham Young,11,UCLA,First Round,1,UCLA
+3,Texas,14,Abilene Christian,First Round,1,Abilene Christian
+7,Connecticut,10,Maryland,First Round,1,Maryland
+2,Alabama,15,Iona,First Round,0,Alabama
+1,Baylor,16,Hartford,First Round,0,Baylor
+8,North Carolina,9,Wisconsin,First Round,1,Wisconsin
+5,Villanova,12,Winthrop,First Round,0,Villanova
+4,Purdue,13,North Texas,First Round,0,Purdue
+6,Texas Tech,11,Utah State,First Round,0,Texas Tech
+3,Arkansas,14,Colgate,First Round,0,Arkansas
+7,Florida,10,Virginia Tech,First Round,0,Florida
+2,Ohio State,15,Oral Roberts,First Round,0,Ohio State
+1,Illinois,16,Drexel,First Round,0,Illinois
+8,Loyola (IL),9,Georgia Tech,First Round,0,Loyola (IL)
+5,Tennessee,12,Oregon State,First Round,1,Oregon State
+4,Oklahoma State,13,Liberty,First Round,0,Oklahoma State
+6,San Diego State,11,Syracuse,First Round,1,Syracuse
+3,West Virginia,14,Morehead State,First Round,0,West Virginia
+7,Clemson,10,Rutgers,First Round,1,Rutgers
+2,Houston,15,Cleveland State,First Round,0,Houston
+1,Gonzaga,8,Oklahoma,Second Round,0,Gonzaga
+4,Virginia,5,Creighton,Second Round,1,Creighton
+3,Kansas,6,Southern California,Second Round,1,Southern California
+2,Iowa,7,Oregon,Second Round,0,Iowa
+1,Michigan,8,Louisiana State,Second Round,0,Michigan
+5,Colorado,13,UNC Greensboro,Second Round,0,Colorado
+11,UCLA,14,Abilene Christian,Second Round,0,UCLA
+2,Alabama,10,Maryland,Second Round,0,Alabama
+1,Baylor,9,Wisconsin,Second Round,1,Wisconsin
+4,Purdue,5,Villanova,Second Round,0,Purdue
+3,Arkansas,6,Texas Tech,Second Round,0,Arkansas
+2,Ohio State,7,Florida,Second Round,0,Ohio State
+1,Illinois,8,Loyola (IL),Second Round,0,Illinois
+4,Oklahoma State,12,Oregon State,Second Round,1,Oregon State
+3,West Virginia,11,Syracuse,Second Round,0,West Virginia
+2,Houston,10,Rutgers,Second Round,0,Houston
+1,Gonzaga,5,Creighton,Sweet Sixteen,0,Gonzaga
+2,Iowa,6,Southern California,Sweet Sixteen,1,Southern California
+1,Michigan,5,Colorado,Sweet Sixteen,1,Colorado
+2,Alabama,11,UCLA,Sweet Sixteen,0,Alabama
+4,Purdue,9,Wisconsin,Sweet Sixteen,1,Wisconsin
+2,Ohio State,3,Arkansas,Sweet Sixteen,0,Ohio State
+1,Illinois,12,Oregon State,Sweet Sixteen,0,Illinois
+2,Houston,3,West Virginia,Sweet Sixteen,0,Houston
+1,Gonzaga,6,Southern California,Elite Eight,0,Gonzaga
+2,Alabama,5,Colorado,Elite Eight,0,Alabama
+2,Ohio State,9,Wisconsin,Elite Eight,0,Ohio State
+1,Illinois,2,Houston,Elite Eight,1,Houston
+1,Gonzaga,2,Alabama,Final Four,0,Gonzaga
+2,Houston,2,Ohio State,Final Four,0,Houston
+1,Gonzaga,2,Houston,National Championship,0,Gonzaga

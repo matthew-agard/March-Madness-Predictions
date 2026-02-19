@@ -10,10 +10,8 @@ Requires a minimum of the 'pandas' library being present in your environment to 
 """
 
 import pandas as pd
-from datetime import datetime
-from data_integrity import season_team_to_coach_tourney_team_dict, coach_team_to_mm_team_dict
-
-curr_year = datetime.now().year
+from get_curr_year import curr_year
+from data_integrity import season_team_to_coach_team_dict, coach_team_to_mm_team_dict, curr_season_to_tourney_dict
 
 
 def merge_clean_team_stats(basic_df, adv_df):
@@ -57,7 +55,8 @@ def merge_clean_coaches_rankings(stats_df, coaches_rankings_df):
         Newly-merged DataFrame of a teams' regular season stats, regular season ranking, and coach performance
     """
     # Change team names accordingly to ensure successful merging with team stats
-    stats_df['School'].replace(season_team_to_coach_tourney_team_dict, inplace=True)
+    stats_df['School'].replace(season_team_to_coach_team_dict, inplace=True)
+    coaches_rankings_df['Coach_Team'].replace(season_team_to_coach_team_dict, inplace=True)
 
     # Merge on the school name
     all_season_stats_df = pd.merge(stats_df, coaches_rankings_df,
@@ -85,7 +84,7 @@ def merge_clean_tourney_games(year, mm_df, all_season_df):
     """
     # Replace current team names with current year's ESPN bracket team names
     if year == curr_year:
-        all_season_df['School'].replace(season_team_to_coach_tourney_team_dict, inplace=True)
+        all_season_df['School'].replace(curr_season_to_tourney_dict, inplace=True)
     # Caveat on 2011 tourney year in which applying the name changes to UAB would cause data loss
     else:
         if (not mm_df['Team_Favorite'].str.contains('UAB').any() 

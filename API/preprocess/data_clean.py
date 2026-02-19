@@ -13,16 +13,14 @@ The following functions are present:
     * fill_playin_teams
     * clean_bracket
 
-Requires a minimum of the 'pandas' and 'datetime' libraries, as well as the 'data_integrity' 
+Requires a minimum of the 'pandas' library, as well as the 'data_integrity' 
 and 'feature_engineering' helper modules, being present in your environment to run.
 """
 
 import pandas as pd
-from datetime import datetime
-from data_integrity import season_team_to_coach_tourney_team_dict
+from get_curr_year import curr_year
+from data_integrity import curr_season_to_tourney_dict
 from feature_engineering import create_faves_underdogs, bidirectional_rounds_str_numeric, create_target_variable
-
-curr_year = datetime.now().year
 
 
 def clean_basic_stats(df):
@@ -39,26 +37,16 @@ def clean_basic_stats(df):
         All basic regular reason data for March Madness teams
     """
     # Remove fake and linearly dependent features
-    fake_feats = ['Rk', 'MP'] + [col for col in df.columns if ('Unnamed' in col)]
-    lin_dep_feats = ['W', 'L', 'SOS', 'Tm.', 'Opp.', 'FGA', '3PA', 'FTA']
+    fake_feats = ['Rk', 'MP'] + [col for col in df.columns 
+                                 if ('Unnamed' in col) or ('W.' in col) or ('L.' in col)]
+    lin_dep_feats = ['L', 'SOS', 'Tm.', 'Opp.', 'FGA', '3PA', 'FTA']
 
     df.drop(fake_feats + lin_dep_feats, axis=1, inplace=True)
 
-    # Rename team record columns (to be later used for stat features)
-    df.rename(columns = {
-        'W.1': 'Conf_W',
-        'L.1': 'Conf_L',
-        'W.2': 'Home_W',
-        'L.2': 'Home_L',
-        'W.3': 'Away_W',
-        'L.3': 'Away_L',
-    }, inplace=True)
+    # Filter out teams that didn't participate in March Madness tournament
+    ncaa_df = df[df['School'].str.contains('NCAA', na=False)]
 
-    # Filter out teams that didn't participate in March Madness tournament (if possible)
-    if df['School'].str.contains('NCAA').any():
-        df = df[df['School'].str.contains('NCAA', na=False)]
-
-    return df
+    return ncaa_df
 
 
 def clean_adv_stats(df):
@@ -76,12 +64,11 @@ def clean_adv_stats(df):
     """
     # Filter out redundant features already captured from basic stats web scraping
     df = pd.concat([df['School'], df.iloc[:, -13:]], axis=1)
+    
+    # Filter out teams that didn't participate in March Madness tournament
+    ncaa_df = df[df['School'].str.contains('NCAA', na=False)]
 
-    # Filter out teams that didn't participate in March Madness tournament (if possible)
-    if df['School'].str.contains('NCAA').any():
-        df = df[df['School'].str.contains('NCAA', na=False)]
-
-    return df
+    return ncaa_df
 
 
 def clean_coach_ranking_stats(coach_df):
@@ -117,13 +104,13 @@ def clean_merged_season_stats(year, all_season_df):
     all_season_df : DataFrame
         Cleaned regular season dataset, ready for merging with tournament matchup data
     """
-    # Convert all numeric datatypes to from str to float
+    # Convert all numbers from str to appropriate numeric types
     for col in all_season_df.columns:
         all_season_df[col] = pd.to_numeric(all_season_df[col], errors='ignore')
 
     # Change team names when necessary to ensure successful merging with tournament matchups
     if (year == curr_year):
-        all_season_df['School'].replace(season_team_to_coach_tourney_team_dict, inplace=True)
+        all_season_df['School'].replace(curr_season_to_tourney_dict, inplace=True)
 
     return all_season_df
 

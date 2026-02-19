@@ -6,8 +6,6 @@ The following functions are present:
     * totals_to_game_average
     * create_faves_underdogs
     * bidirectional_rounds_str_numeric
-    * records_wl_pct
-    * encode_confs
     * matchups_to_underdog_relative
     * scale_features
     * create_bracket_round
@@ -20,7 +18,7 @@ the 'data_integrity' helper module, being present in your environment to run.
 
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.preprocessing import StandardScaler
 from data_integrity import rounds_str_to_numeric, rounds_numeric_to_str
 
 
@@ -64,21 +62,17 @@ def create_faves_underdogs(mm_df, season_df):
 
         # Seeds are equivalent
         else:
-            try:
-                # Get regular season win percentage for both teams
-                team_win_pct = float(season_df[season_df['School'] == data['Team']]['W-L%'])
-                team1_win_pct = float(season_df[season_df['School'] == data['Team.1']]['W-L%'])
-                
-                # Whoever has the better record is the favorite, else they're the underdog; populate corresponding arrays
-                if team_win_pct > team1_win_pct:
-                    underdogs.append(team1_arr)
-                    faves.append(team_arr)
-                else:
-                    underdogs.append(team_arr)
-                    faves.append(team1_arr)
-            except TypeError:
-                print(season_df['School'], "\t", data['Team'], "\t", data['Team.1'])
-                continue
+            # Get regular season win percentage for both teams
+            team_win_pct = float(season_df[season_df['School'] == data['Team']]['W-L%'])
+            team1_win_pct = float(season_df[season_df['School'] == data['Team.1']]['W-L%'])
+            
+            # Whoever has the better record is the favorite, else they're the underdog; populate corresponding arrays
+            if team_win_pct > team1_win_pct:
+                underdogs.append(team1_arr)
+                faves.append(team_arr)
+            else:
+                underdogs.append(team_arr)
+                faves.append(team1_arr)
 
     # Return favorite-underdogs arrays as a single dictionary, referenced by their corresponding key
     faves_unds = {
@@ -117,52 +111,18 @@ def totals_to_game_average(all_season_df, season_basic_cols):
     for team in ['Favorite', 'Underdog']:
         # Iterate all over basic team stats columns
         for col in season_basic_cols:
-            if (col not in ['G', 'W', 'SRS']) and not any([val in col for val in ['%', 'Conf']]):
+            if (col not in ['G', 'W', 'SRS']) and '%' not in col:
                 try:
                     # Convert basic team stat from season total to per game average
-                    all_season_df[f'{col}/Game_{team}'] = np.round(all_season_df[f'{col}_{team}'] / all_season_df[f'G_{team}'], 1)
+                    all_season_df[f'{col}/Game_{team}'] = np.round(
+                        all_season_df[f'{col}_{team}'] / all_season_df[f'G_{team}'],
+                        1
+                    )
                     # Drop season total feature
                     all_season_df.drop(f'{col}_{team}', axis=1, inplace=True)
                 except KeyError:
                     # Catch the error if the feature was already dropped during nulls decision making
                     pass
-
-
-def records_wl_pct(df):
-    """Convert regular season records (conference, home, away) to win-loss percentages
-
-    Parameters
-    ----------
-    df : DataFrame
-        Fully merged and cleaned tournament data
-    """
-    for team in ['Favorite', 'Underdog']:
-        for category in ['Conf', 'Home', 'Away']:
-            try:
-                # Create W-L% feature
-                df[f'{category}_W-L%_{team}'] = df[f'{category}_W_{team}'] / (df[f'{category}_W_{team}'] + df[f'{category}_L_{team}'])
-                # Remove loss feature to avoid potential for linear dependency
-                df.drop(f'{category}_L_{team}', axis=1, inplace=True)
-            except KeyError:
-                # Catch the error if the feature was already dropped during nulls decision making
-                pass
-
-
-def encode_confs(primary_df, fit_df):
-    """Convert categorical conference values to numeric values
-
-    Parameters
-    ----------
-    primary_df : DataFrame
-        Dataset to engineer; always used to transform StandardScaler()
-    fit_df : DataFrame
-        Dataset used to fit StandardScaler()
-    """
-    encoder = LabelEncoder()
-    conf_cols = ['Conf_Favorite', 'Conf_Underdog']
-
-    fit_df[conf_cols].apply(lambda col: encoder.fit(fit_df[col.name]))
-    primary_df[conf_cols] = primary_df[conf_cols].apply(lambda col: encoder.transform(primary_df[col.name]))
 
 
 def matchups_to_underdog_relative(df):
@@ -176,7 +136,7 @@ def matchups_to_underdog_relative(df):
     # Get set of all features that should be made relative
     team_stat_cols = set([col.replace('_Underdog', '').replace('_Favorite', '') for col in df.columns])
     # Exclude relevant featuers from this process
-    team_stat_cols.difference_update(['Round', 'Seed', 'Conf', 'Underdog_Upset'])
+    team_stat_cols.difference_update(['Round', 'Seed', 'Underdog_Upset'])
 
     # Perform feature conversion
     for col in team_stat_cols:    
@@ -185,35 +145,26 @@ def matchups_to_underdog_relative(df):
         df.drop([col + '_Underdog', col + '_Favorite'], axis=1, inplace=True)
 
 
-def scale_features(primary_df, fit_df):
+def scale_features(primary_df):
     """'Center the data' of all numerical features; levels playing field for feature importances
 
     Parameters
     ----------
     primary_df : DataFrame
-        Dataset to engineer; always used to transform StandardScaler()
-    fit_df : DataFrame
-        Dataset used to fit StandardScaler()
+        Dataset to transform
 
     Returns
     -------
     full_rescale : DataFrame
         Fully merged, cleaned, and scaled tournament data
     """
-    # Import and fit StandardScaler object
     scaler = StandardScaler()
-    fit_df_num = fit_df.drop(['Conf_Favorite', 'Conf_Underdog'], axis=1)
-    scaler.fit(fit_df_num)
 
     # Rescale data, then format it according to the structure of the primary DataFrame
-    rescale_num = scaler.transform(primary_df.drop(['Conf_Favorite', 'Conf_Underdog'], axis=1))
-    rescale_cols = primary_df.drop(['Conf_Favorite', 'Conf_Underdog'], axis=1).columns
+    full_rescale = scaler.fit_transform(primary_df)
+    rescale_df = pd.DataFrame(full_rescale, index=primary_df.index, columns=primary_df.columns)
 
-    primary_df_num = pd.DataFrame(rescale_num, index=primary_df.index, columns=rescale_cols)
-    primary_df_cat = primary_df[['Conf_Favorite', 'Conf_Underdog']]
-
-    full_rescale = pd.concat([primary_df_num, primary_df_cat], axis=1)
-    return full_rescale
+    return rescale_df
 
 
 def create_bracket_round(prev_round):
@@ -241,13 +192,9 @@ def create_bracket_round(prev_round):
         # Append a single winner to the initialized list
         winners.append([winner_seed, winner_team])
 
-    try:
-        # Reshape the n winners into n/2 matchups for a DataFrame of the subsequent round
-        winners = np.array(winners).reshape((len(winners) // 2), 4)
-        next_round = pd.DataFrame(winners, columns=['Seed', 'Team', 'Seed.1', 'Team.1'])
-    except ValueError:
-        print(winners)
-        raise SystemExit
+    # Reshape the n winners into n/2 matchups for a DataFrame of the subsequent round
+    winners = np.array(winners).reshape((len(winners) // 2), 4)
+    next_round = pd.DataFrame(winners, columns=['Seed', 'Team', 'Seed.1', 'Team.1'])
 
     return next_round
 

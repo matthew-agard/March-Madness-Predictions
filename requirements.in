@@ -9,3 +9,4 @@ xgboost
 IPython
 ipykernel
 jupyter
+debugpy

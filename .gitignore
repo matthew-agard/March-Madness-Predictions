@@ -1,5 +1,6 @@
-# Virtual env
+# Env setup
 .venv/
+.vscode/
 
 # File metadata
 **__pycache__

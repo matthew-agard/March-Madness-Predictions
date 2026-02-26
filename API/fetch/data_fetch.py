@@ -17,7 +17,6 @@ Requires a minimum of the 'pandas' and 're' libraries, as well as the 'web_scrap
 """
 
 import pandas as pd
-import numpy as np
 import re
 from merge_fetch import ratings_team_to_coach_team_dict, playin_regions_list, merge_raw_tourney_games
 from web_scraper_types import bs4_web_scrape, pandas_web_scrape, bracket_web_scrape
@@ -103,7 +102,7 @@ def get_coach_rankings_data(year):
     rows = table.find_all("tr")
 
     # Prepare DataFrames
-    coaches_rankings_df = pd.DataFrame(columns=['Coach_Team', 'Top_25', 'Coach_Start', 'MM', 'S16', 'F4', 'Champs'])
+    coaches_rankings_df = pd.DataFrame(columns=['Coach_Team', 'Conf', 'Top_25', 'Coach_Start', 'MM', 'S16', 'F4', 'Champs'])
 
     ratings_df = get_ratings_data(year)
     ratings_df['Top_25_Team'].replace(ratings_team_to_coach_team_dict, inplace=True)
@@ -112,6 +111,7 @@ def get_coach_rankings_data(year):
     for i, row in enumerate(rows):
         if(row.find('a')):
             coach_team = row.find_all('a')[1]
+            conf = row.find("td", attrs={"data-stat": "conference"})
             top_25 = 1 if coach_team.text in ratings_df['Top_25_Team'].values else 0
             year_start = row.find("td", attrs={"data-stat": "since"})
             mm_apps = row.find("td", attrs={"data-stat": "ncaa_car"})
@@ -120,8 +120,8 @@ def get_coach_rankings_data(year):
             champ_wins = row.find("td", attrs={"data-stat": "champ_car"})          
 
             coaches_rankings_df.loc[i] = [
-                coach_team.text, top_25, year_start.text, mm_apps.text,
-                sw16_apps.text, f4_apps.text, champ_wins.text
+                coach_team.text, conf.text, top_25, year_start.text, 
+                mm_apps.text, sw16_apps.text, f4_apps.text, champ_wins.text
             ]
 
     coaches_rankings_df.sort_values(by=['Coach_Team', 'Coach_Start'], inplace=True)
@@ -169,34 +169,30 @@ def get_feature_null_counts(df):
 def get_playin_matchups(year):
     # Fetch raw HTML
     raw_html = bs4_web_scrape(f'https://www.sports-reference.com/cbb/postseason/{year}-ncaa.html')
-
-    # Used for iterating over all possible combinations of play-in regions
-    playin_regions = playin_regions_list
-    playin_classes = ['current', '']
     
     # Initialize data structures to store scraped data
     seeds_list, teams_scores_list = [], []
 
-    for pi_class in playin_classes:
-        for i, playin_region in enumerate(playin_regions):
-            # Scrape all bracket data
-            bracket_raw = raw_html.find("div", attrs={'id': playin_region, 'class': pi_class})
+    # Iterate over all possible combinations of play-in regions
+    for playin_region in playin_regions_list:
+        # Scrape all bracket data
+        bracket_raw = raw_html.find("div", attrs={'id': playin_region})
 
-            try:
-                # Extract play-in matchups from bracket web scrape data
-                playin_raw = bracket_raw.find("p")
-                
-                # Get play-in teams' seeds
-                seeds_raw = playin_raw.find_all("strong")
-                seeds_list = seeds_list + [seed.text for seed in seeds_raw if ((seed.text).isdigit()) and (int(seed.text) <= 16)]
-
-                # Get play-in teams' names & game scores
-                teams_scores_raw = playin_raw.find_all("a")
-                teams_scores_list = teams_scores_list + [team_score.text for team_score in teams_scores_raw]
+        try:
+            # Extract play-in matchups from bracket web scrape data
+            playin_raw = bracket_raw.find("p")
             
-            # Catch the error from trying to scrape data from a non-existent HTML element
-            except AttributeError:
-                continue
+            # Get play-in teams' seeds
+            seeds_raw = playin_raw.find_all("strong")
+            seeds_list = seeds_list + [seed.text for seed in seeds_raw if ((seed.text).isdigit()) and (int(seed.text) <= 16)]
+
+            # Get play-in teams' names & game scores
+            teams_scores_raw = playin_raw.find_all("a")
+            teams_scores_list = teams_scores_list + [team_score.text for team_score in teams_scores_raw]
+        
+        # Catch the error from trying to scrape data from a non-existent HTML element
+        except AttributeError:
+            continue
 
     # Initialize rounds_list accordingly
     rounds_list = (['Play-In'] * (len(seeds_list) // 2))
@@ -215,7 +211,7 @@ def get_tourney_matchups(year):
     tourney_df = pd.DataFrame()
 
     # Iterate over all 4 tournament regions and Final Four
-    for i, tourney_region in enumerate(tourney_regions):
+    for tourney_region in tourney_regions:
         # Get all teams' seeds
         seeds = tourney_region.find_all("span")
         seeds_list = [data.text for data in seeds if ("at ") not in data.text][:-1]

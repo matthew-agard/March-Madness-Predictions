@@ -1,0 +1,68 @@
+Seed_Favorite,Team_Favorite,Seed_Underdog,Team_Underdog,Round,Underdog_Upset,Winner
+16,Grambling,16,Montana State,Play-In,0,Grambling
+10,Colorado State,10,Virginia,Play-In,0,Colorado State
+10,Colorado,10,Boise State,Play-In,0,Colorado
+16,Wagner,16,Howard,Play-In,1,Howard
+1,UConn,16,Stetson,First Round,0,UConn
+8,Florida Atlantic,9,Northwestern,First Round,0,Florida Atlantic
+5,San Diego State,12,UAB,First Round,0,San Diego State
+4,Auburn,13,Yale,First Round,0,Auburn
+6,BYU,11,Duquesne,First Round,1,Duquesne
+3,Illinois,14,Morehead State,First Round,0,Illinois
+7,Washington State,10,Drake,First Round,0,Washington State
+2,Iowa State,15,South Dakota State,First Round,0,Iowa State
+1,Purdue,16,Grambling,First Round,0,Purdue
+8,Utah State,9,TCU,First Round,0,Utah State
+5,Gonzaga,12,McNeese State,First Round,0,Gonzaga
+4,Kansas,13,Samford,First Round,0,Kansas
+6,South Carolina,11,Oregon,First Round,1,Oregon
+3,Creighton,14,Akron,First Round,0,Creighton
+7,Texas,10,Colorado State,First Round,1,Colorado State
+2,Tennessee,15,St. Peter's,First Round,0,Tennessee
+1,Houston,16,Longwood,First Round,0,Houston
+8,Nebraska,9,Texas A&M,First Round,1,Texas A&M
+5,Wisconsin,12,James Madison,First Round,0,Wisconsin
+4,Duke,13,Vermont,First Round,0,Duke
+6,Texas Tech,11,NC State,First Round,1,NC State
+3,Kentucky,14,Oakland,First Round,0,Kentucky
+7,Florida,10,Colorado,First Round,1,Colorado
+2,Marquette,15,Western Kentucky,First Round,0,Marquette
+1,UNC,16,Howard,First Round,0,UNC
+8,Mississippi State,9,Michigan State,First Round,1,Michigan State
+5,Saint Mary's,12,Grand Canyon,First Round,1,Grand Canyon
+4,Alabama,13,College of Charleston,First Round,0,Alabama
+6,Clemson,11,New Mexico,First Round,0,Clemson
+3,Baylor,14,Colgate,First Round,0,Baylor
+7,Dayton,10,Nevada,First Round,1,Nevada
+2,Arizona,15,Long Beach State,First Round,0,Arizona
+1,UConn,8,Florida Atlantic,Second Round,0,UConn
+4,Auburn,5,San Diego State,Second Round,1,San Diego State
+3,Illinois,11,Duquesne,Second Round,0,Illinois
+2,Iowa State,7,Washington State,Second Round,0,Iowa State
+1,Purdue,8,Utah State,Second Round,0,Purdue
+4,Kansas,5,Gonzaga,Second Round,1,Gonzaga
+3,Creighton,11,Oregon,Second Round,1,Oregon
+2,Tennessee,10,Colorado State,Second Round,0,Tennessee
+1,Houston,9,Texas A&M,Second Round,0,Houston
+4,Duke,5,Wisconsin,Second Round,0,Duke
+3,Kentucky,11,NC State,Second Round,1,NC State
+2,Marquette,10,Colorado,Second Round,0,Marquette
+1,UNC,9,Michigan State,Second Round,0,UNC
+4,Alabama,12,Grand Canyon,Second Round,0,Alabama
+3,Baylor,6,Clemson,Second Round,1,Clemson
+2,Arizona,10,Nevada,Second Round,0,Arizona
+1,UConn,5,San Diego State,Sweet Sixteen,0,UConn
+2,Iowa State,3,Illinois,Sweet Sixteen,1,Illinois
+1,Purdue,5,Gonzaga,Sweet Sixteen,0,Purdue
+2,Tennessee,11,Oregon,Sweet Sixteen,0,Tennessee
+1,Houston,4,Duke,Sweet Sixteen,0,Houston
+2,Marquette,11,NC State,Sweet Sixteen,1,NC State
+1,UNC,4,Alabama,Sweet Sixteen,0,UNC
+2,Arizona,6,Clemson,Sweet Sixteen,0,Arizona
+1,UConn,3,Illinois,Elite Eight,0,UConn
+1,Purdue,2,Tennessee,Elite Eight,0,Purdue
+1,Houston,11,NC State,Elite Eight,0,Houston
+1,UNC,2,Arizona,Elite Eight,0,UNC
+1,UConn,1,Purdue,Final Four,0,UConn
+1,Houston,1,UNC,Final Four,0,Houston
+1,UConn,1,Houston,National Championship,0,UConn

@@ -4,7 +4,6 @@ This script is used as a helper module in the data_fetch script.
 The following functions are present:
     * pandas_web_scrape
     * bs4_web_scrape
-    * bracket_web_scrape
 
 Requires a minimum of the 'pandas', 'requests', 'BeautifulSoup' 
 and 'time' libraries being present  in your environment to run.
@@ -65,32 +64,3 @@ def bs4_web_scrape(url):
     sleep(3)
 
     return soup
-
-
-def bracket_web_scrape(url, attrs):
-    """BeautifulSoup bracket web scraper
-
-    Parameters
-    ----------
-    url : str
-        URL path to data
-    attrs : dict
-        characteristics to idenitfy HTML element of interest
-
-    Returns
-    -------
-    games : list
-        Collection of all tournament game data points (by row)
-    """
-    # Configure scraper
-    page = requests.get(url)
-    soup = BeautifulSoup(page.text, "html.parser")
-
-    # 3 second delay (request rate limit)
-    sleep(3)
-
-    # Find bracket and get its data
-    bracket = soup.find("div", attrs=attrs)
-    games = bracket.find_all("dl")
-
-    return games

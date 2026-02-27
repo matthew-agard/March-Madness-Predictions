@@ -50,17 +50,9 @@ season_team_to_coach_team_dict = {
 
 coach_team_to_mm_team_dict = {
      'UAB': 'Alabama-Birmingham',
-     # 'UT Arlington': 'Texas-Arlington',
 }
 
-curr_season_to_tourney_dict = {
-     'Cal State Fullerton': 'CSU Fullerton',
-     'Miami (FL)': 'Miami',
-     'Loyola (IL)': 'Loyola Chicago',
-     'UNC': 'North Carolina',
-     "St. Peter's": "Saint Peter's",
-     'Texas A&M-Corpus Christi': 'Texas A&M-CC',
-}
+curr_season_to_tourney_dict = {}
 
 rounds_str_to_numeric = {
      'Play-In': 0,

@@ -17,9 +17,9 @@ Requires a minimum of the 'pandas' and 're' libraries, as well as the 'web_scrap
 """
 
 import pandas as pd
-import re
+from get_curr_year import curr_year
 from merge_fetch import ratings_team_to_coach_team_dict, playin_regions_list, merge_raw_tourney_games
-from web_scraper_types import bs4_web_scrape, pandas_web_scrape, bracket_web_scrape
+from web_scraper_types import bs4_web_scrape, pandas_web_scrape
 
 def get_team_data(url, attrs, header=1):
     """Fetch team data (season stats, historical tournament performance)
@@ -236,14 +236,6 @@ def get_tourney_matchups(year):
         # teams_scores_list with Final Four data
         else:
             # We can expect len(teams_scores_list) == 12 when Final Four data is present.
-            # 2023 exception, where sportsreference improperly recorded tourney data.
-            if (year == 2023):
-                # Insert missing seed from sportsreference
-                seeds_list.append("4")
-                # Insert missing team & scores from sportsreference
-                teams_scores_list.append("59")
-                teams_scores_list.append("UConn")
-                teams_scores_list.append("76")
             # Initialize rounds_list accordingly
             rounds_list = (['Final Four'] * 2) + ['National Championship']
 
@@ -261,14 +253,13 @@ def get_hist_bracket(year):
     full_tourney_df = pd.concat([playin_df, tourney_df], ignore_index=True)
     return full_tourney_df
 
-
-def get_current_bracket(url):
+def get_current_bracket():
     """Fetch current tournament bracket matchups
 
     Parameters
     ----------
-    url : str
-        URL path to data
+    year : int
+        Calendar year
 
     Returns
     -------
@@ -276,25 +267,27 @@ def get_current_bracket(url):
         Curated data points read into a DataFrame
     """
     # Fetch raw data and prepare DataFrame
-    raw_html = bracket_web_scrape(url, attrs={"id": "bracket"})
+    raw_html = bs4_web_scrape(f'https://www.sports-reference.com/cbb/postseason/{curr_year}-ncaa.html')
+    matchup_regions = raw_html.find_all("div", attrs={'id': 'bracket'})
     current_bracket = pd.DataFrame(columns=['Seed', 'Team', 'Seed.1', 'Team.1'])
 
     # Iterate over raw data to extract team and their seeds
-    for i, game in enumerate(raw_html):
-        game_string = game.find('dt')
+    for i, matchups in enumerate(matchup_regions):
+        # Get all teams' seeds
+        seeds = matchups.find_all("span")
+        seeds_list = [data.text for data in seeds if ("at ") not in data.text][:-1]
+        # Clean First Four team seeds; will need to be manually added to CSV
+        seeds_list = [int(seed) if seed != '' else 0 for seed in seeds_list]
+        
+        # Get all teams' names
+        teams = matchups.find_all("a")
+        teams_list = [data.text for data in teams if ("at ") not in data.text and not data.text.isdigit()][:-1]
+        # Clean First Four team names; will need to be manually added to CSV
+        teams_list = [team if team != 'Play-In' else None for team in teams_list]
 
-        teams = [name['title'] for name in game_string.find_all('a')]
-
-        seeds = re.findall(r'\d+', game_string.text) 
-        seeds = list(map(int, seeds))
-
-        try:
-            # Read team matchups into dataframe
-            current_bracket.loc[i] = [seeds[0], teams[0], seeds[1], teams[1]]
-        except IndexError:
-            # Catch error where 1st Round awaits First Four winners
-            if len(teams) > 0:
-                current_bracket.loc[i] = [seeds[0], teams[0], 0, None]
+        # Read team matchups into dataframe
+        for j in range(0, len(teams_list), 2):
+            current_bracket.loc[(i*len(teams_list)) + j] = [seeds_list[j], teams_list[j], seeds_list[j+1], teams_list[j+1]]
                 
     current_bracket.index = range(len(current_bracket))
     return current_bracket

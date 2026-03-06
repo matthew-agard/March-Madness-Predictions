@@ -28,13 +28,15 @@ The purpose of this personal project is to perform supervised classification on 
 # TODO
 - Feature Tasks:
     - Explore potential use of removed null features in model predictions
+    - Linearly dependent feaure swap: W -> W-L%
 - Models:
     - Neural Network
+    - sklearnex
 - Metrics:
     - Log Loss
     - Hinge Loss
     - Etc... (research more ideas)
-- Productionize model to AWS cloud; brainstorm services to use
+- Model Productization (AWS)
     - S3
     - Lambda
     - Glue

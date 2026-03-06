@@ -19,7 +19,7 @@ and 'feature_engineering' helper modules, being present in your environment to r
 
 import pandas as pd
 from get_curr_year import curr_year
-from data_integrity import curr_season_to_tourney_dict
+from data_integrity import season_team_to_coach_tourney_team_dict
 from feature_engineering import create_faves_underdogs, bidirectional_rounds_str_numeric, create_target_variable
 
 
@@ -38,7 +38,7 @@ def clean_basic_stats(df):
     """
     # Remove fake and linearly dependent features
     fake_feats = ['Rk', 'MP'] + [col for col in df.columns if ('Unnamed' in col)]
-    lin_dep_feats = ['L', 'SOS', 'Tm.', 'Opp.', 'FGA', '3PA', 'FTA']
+    lin_dep_feats = ['W', 'L', 'SOS', 'Tm.', 'Opp.', 'FGA', '3PA', 'FTA']
 
     df.drop(fake_feats + lin_dep_feats, axis=1, inplace=True)
 
@@ -52,10 +52,11 @@ def clean_basic_stats(df):
         'L.3': 'Away_L',
     }, inplace=True)
 
-    # Filter out teams that didn't participate in March Madness tournament
-    ncaa_df = df[df['School'].str.contains('NCAA', na=False)]
+    # Filter out teams that didn't participate in March Madness tournament (if possible)
+    if df['School'].str.contains('NCAA').any():
+        df = df[df['School'].str.contains('NCAA', na=False)]
 
-    return ncaa_df
+    return df
 
 
 def clean_adv_stats(df):
@@ -73,11 +74,12 @@ def clean_adv_stats(df):
     """
     # Filter out redundant features already captured from basic stats web scraping
     df = pd.concat([df['School'], df.iloc[:, -13:]], axis=1)
-    
-    # Filter out teams that didn't participate in March Madness tournament
-    ncaa_df = df[df['School'].str.contains('NCAA', na=False)]
 
-    return ncaa_df
+    # Filter out teams that didn't participate in March Madness tournament (if possible)
+    if df['School'].str.contains('NCAA').any():
+        df = df[df['School'].str.contains('NCAA', na=False)]
+
+    return df
 
 
 def clean_coach_ranking_stats(coach_df):
@@ -119,7 +121,7 @@ def clean_merged_season_stats(year, all_season_df):
 
     # Change team names when necessary to ensure successful merging with tournament matchups
     if (year == curr_year):
-        all_season_df['School'].replace(curr_season_to_tourney_dict, inplace=True)
+        all_season_df['School'].replace(season_team_to_coach_tourney_team_dict, inplace=True)
 
     return all_season_df
 

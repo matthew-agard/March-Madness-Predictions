@@ -35,7 +35,6 @@ The purpose of this personal project is to perform supervised classification on 
 - Metrics:
     - Log Loss
     - Hinge Loss
-    - Etc... (research more ideas)
 - Model Productization (AWS)
     - S3
     - Lambda

@@ -23,12 +23,11 @@ The purpose of this personal project is to perform supervised classification on 
 - Install project dependencies (`pip install -r requirements.txt`)
 - Execute the Jupyter notebook found in the latest year's directory to obtain your tournament predictions
     - NOTE: Due to a lack of backwards API compatibility, only the latest year's notebook is guaranteed to run successfully using the API
-    - Should you choose to experiment with prior years, version tags are available (e.g. `v1.2021`) to provide snapshots of the API code at the point-in-time of the given's year successful notebook execution.
+    - Should you choose to experiment with prior years, version tags are available (e.g. `v2021.0`) to provide snapshots of the API code at the point-in-time of the given's year successful notebook execution.
 
 # TODO
 - Feature Tasks:
     - Explore potential use of removed null features in model predictions
-    - Linearly dependent feaure swap: W -> W-L%
 - Models:
     - Neural Network
     - sklearnex

@@ -38,19 +38,9 @@ def clean_basic_stats(df):
     """
     # Remove fake and linearly dependent features
     fake_feats = ['Rk', 'MP'] + [col for col in df.columns if ('Unnamed' in col)]
-    lin_dep_feats = ['W', 'L', 'SOS', 'Tm.', 'Opp.', 'FGA', '3PA', 'FTA']
+    lin_dep_feats = ['W-L%', 'L', 'SOS', 'FGA', '3PA', 'FTA'] + [col for col in df.columns if ('.' in col)]
 
     df.drop(fake_feats + lin_dep_feats, axis=1, inplace=True)
-
-    # Rename team record columns (to be later used for stat features)
-    df.rename(columns = {
-        'W.1': 'Conf_W',
-        'L.1': 'Conf_L',
-        'W.2': 'Home_W',
-        'L.2': 'Home_L',
-        'W.3': 'Away_W',
-        'L.3': 'Away_L',
-    }, inplace=True)
 
     # Filter out teams that didn't participate in March Madness tournament (if possible)
     if df['School'].str.contains('NCAA').any():

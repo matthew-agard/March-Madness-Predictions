@@ -1,15 +1,3 @@
-"""EDA Helper Functions
-
-This script is used as a module in the March_Madness_Predictions Jupyter notebooks.
-The following functions are present:
-    * get_yearly_base_rates
-    * get_seed_pairs
-    * format_plot
-
-Requires a minimum of the 'pandas', 'numpy', and 'matplotlib' libraries being present 
-in your environment to run.
-"""
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt

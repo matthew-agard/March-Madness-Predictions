@@ -1,26 +1,10 @@
-"""Feature Engineering Helper Functions
-
-This script is used as a helper module in the data_clean and data_pipeline scripts.
-
-The following functions are present:
-    * totals_to_game_average
-    * create_faves_underdogs
-    * bidirectional_rounds_str_numeric
-    * encode_confs
-    * matchups_to_underdog_relative
-    * scale_features
-    * create_bracket_round
-    * create_bracket_winners
-    * create_target_variable
-
-Requires a minimum of the 'pandas', 'numpy', and 'sklearn' libraries, as well as 
-the 'data_integrity' helper module, being present in your environment to run.
-"""
-
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler, OrdinalEncoder
-from data_integrity import rounds_str_to_numeric, rounds_numeric_to_str
+
+from sys import path
+path.append('../../')
+from API.preprocess.data_integrity import rounds_str_to_numeric, rounds_numeric_to_str
 
 
 def create_faves_underdogs(mm_df, season_df):

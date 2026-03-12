@@ -26,16 +26,16 @@ The purpose of this personal project is to perform supervised classification on 
     - Should you choose to experiment with prior years, version tags are available (e.g. `v2021.0`) to provide snapshots of the API code at the point-in-time of the given's year successful notebook execution.
 
 # TODO
-- Feature Tasks:
-    - Explore potential use of removed null features in model predictions
-    - API import refactor
-- Models:
-    - Neural Network
-    - sklearnex
+- Tasks:
+    - Potentially explore use of removed null features in model predictions
+    - Utilize sklearnex for model training optimization
+    - Assign release tags
+    - Update model_selection parameter sets
+    - Implement neural network for model_evaluation
 - Metrics:
     - Log Loss
     - Hinge Loss
-- Model Productization (AWS)
+- Productionization (AWS)
     - S3
     - Lambda
     - Glue

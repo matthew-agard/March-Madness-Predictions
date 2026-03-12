@@ -1,23 +1,13 @@
-"""Model Evaluation Helper Functions
-
-This script is used as a module in the March_Madness_Predictions Jupyter notebooks.
-
-The following functions are present:
-    * evaluate_cv_models
-    * probs_to_preds
-    * test_model_thresholds
-    * classification_report
-
-Requires a minimum of the 'pandas', 'numpy', and 'sklearn' libraries being present 
-in your environment to run.
-"""
-
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.metrics import accuracy_score, classification_report
 from xgboost import DMatrix
-from XGBoostCV import XGBoostCV
+
+from sys import path
+path.append('../../')
+from API.model.XGBoostCV import XGBoostCV
+
 
 def evaluate_cv_models(cv_models, X, y):
     """Capture stats on model performances against chosen metrics

@@ -1,10 +1,3 @@
-"""Data Integrity Dictionaries
-
-This script stores lists and dictionaries used in the data_fetch, data_clean, and feature_engineering scripts.
-
-No functions are present, and no libraries or modules are required.
-"""
-
 season_team_to_coach_tourney_team_dict = {
      'Brigham Young': 'BYU',
      'Cal State Long Beach': 'Long Beach State',

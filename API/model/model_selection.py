@@ -1,19 +1,3 @@
-"""Model Selection Helper Functions
-
-This script is used as a module in the March_Madness_Predictions Jupyter notebooks.
-
-The following functions are present:
-    * init_knn
-    * init_naive_bayes
-    * init_logreg
-    * init_svm
-    * init_rf
-    * get_cv_models
-
-Requires a minimum of the 'numpy' and 'sklearn' libraries being present 
-in your environment to run.
-"""
-
 import numpy as np
 from sklearn.naive_bayes import GaussianNB
 from sklearn.linear_model import LogisticRegression

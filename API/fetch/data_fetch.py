@@ -1,25 +1,11 @@
-"""Data Fetch Helper Functions
-
-This script is used as a helper module in the data_pipeline script; 
-also used as a module in the March_Madness_Predictions Jupyter notebooks.
-
-The following functions are present:
-    * get_team_data
-    * get_ratings_data
-    * get_coach_rankings_data
-    * get_null_rows
-    * get_feature_null_counts
-    * get_hist_bracket
-    * get_current_bracket
-
-Requires a minimum of the 'pandas' and 're' libraries, as well as the 'web_scraper_types',
-'data_merge' and 'data_integrity' helper modules, being present in your environment to run.
-"""
-
 import pandas as pd
-from get_curr_year import curr_year
-from merge_fetch import ratings_team_to_coach_team_dict, playin_regions_list, merge_raw_tourney_games
-from web_scraper_types import bs4_web_scrape, pandas_web_scrape
+
+from sys import path
+path.append('../..')
+from API.get_curr_year import curr_year
+from API.fetch.merge_fetch import ratings_team_to_coach_team_dict, playin_regions_list, merge_raw_tourney_games
+from API.fetch.web_scraper_types import bs4_web_scrape, pandas_web_scrape
+
 
 def get_team_data(url, attrs, header=1):
     """Fetch team data (season stats, historical tournament performance)

@@ -1,17 +1,9 @@
-"""Data Merge Helper Functions
-
-This script is used as a helper module in the data_pipeline script.
-The following functions are present:
-    * merge_clean_team_stats
-    * merge_clean_coaches_rankings
-    * merge_clean_tourney_games
-
-Requires a minimum of the 'pandas' library being present in your environment to run.
-"""
-
 import pandas as pd
-from get_curr_year import curr_year
-from data_integrity import season_team_to_coach_tourney_team_dict, coach_team_to_mm_team_dict
+
+from sys import path
+path.append('../..')
+from API.get_curr_year import curr_year
+from API.preprocess.data_integrity import season_team_to_coach_tourney_team_dict, coach_team_to_mm_team_dict
 
 
 def merge_clean_team_stats(basic_df, adv_df):

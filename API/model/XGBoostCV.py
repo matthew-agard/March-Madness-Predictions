@@ -2,7 +2,7 @@ import pandas as pd
 from random import choice, seed
 from xgboost import DMatrix, train as xgb_train, cv as xgb_cv
 
-class XGBoostCV(object):
+class XGBoostCV:
     def __init__(
         self, iterations, params, cross_vals, metrics, random_state=42, stratified=True, pandas=True
     ):

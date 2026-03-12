@@ -1,32 +1,12 @@
-"""Data Pipeline Helper Functions
-
-This script is used as a module in the March_Madness_Predictions Jupyter notebooks.
-
-The following functions are present:
-    * regular_season_stats
-    * coach_team_performance
-    * all_team_season_data
-    * hist_tournament_games
-    * dataset_pipeline
-    * feature_pipeline
-    * round_pipeline
-    * bracket_pipeline
-
-Requires a minimum of the 'pandas' library, as well as the 'data_fetch', 'data_clean',
-'data_merge', and 'feature_engineering' helper modules, being present in your environment to run.
-"""
-
 import pandas as pd
 
 from sys import path
-path.append('../fetch')
-from data_fetch import get_team_data, get_coach_rankings_data, get_hist_bracket
-path.append('../model')
-from model_evaluation import model_predictions
-
-from data_clean import clean_basic_stats, clean_adv_stats, clean_coach_ranking_stats, clean_merged_season_stats, clean_tourney_data, clean_curr_round_data, fill_playin_teams, clean_bracket
-from data_merge import merge_clean_team_stats, merge_clean_coaches_rankings, merge_clean_tourney_games
-from feature_engineering import totals_to_game_average, encode_confs, bidirectional_rounds_str_numeric, matchups_to_underdog_relative, scale_features, create_bracket_round, create_bracket_winners
+path.append('../../')
+from API.fetch.data_fetch import get_team_data, get_coach_rankings_data, get_hist_bracket
+from API.model.model_evaluation import model_predictions
+from API.preprocess.data_clean import clean_basic_stats, clean_adv_stats, clean_coach_ranking_stats, clean_merged_season_stats, clean_tourney_data, clean_curr_round_data, fill_playin_teams, clean_bracket
+from API.preprocess.data_merge import merge_clean_team_stats, merge_clean_coaches_rankings, merge_clean_tourney_games
+from API.preprocess.feature_engineering import totals_to_game_average, encode_confs, bidirectional_rounds_str_numeric, matchups_to_underdog_relative, scale_features, create_bracket_round, create_bracket_winners
 
 
 def regular_season_stats(year):

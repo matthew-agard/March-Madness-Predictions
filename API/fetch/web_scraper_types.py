@@ -1,14 +1,3 @@
-"""Web Scraper Helper Functions
-
-This script is used as a helper module in the data_fetch script.
-The following functions are present:
-    * pandas_web_scrape
-    * bs4_web_scrape
-
-Requires a minimum of the 'pandas', 'requests', 'BeautifulSoup' 
-and 'time' libraries being present  in your environment to run.
-"""
-
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup

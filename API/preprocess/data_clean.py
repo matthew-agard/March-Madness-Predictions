@@ -1,26 +1,10 @@
-"""Data Clean Helper Functions
-
-This script is used as a helper module in the data_pipeline script.
-
-The following functions are present:
-    * clean_basic_stats
-    * clean_adv_stats
-    * clean_coach_ranking_stats
-    * clean_merged_season_stats
-    * clean_tourney_data
-    * clean_round_cols
-    * clean_curr_round_data
-    * fill_playin_teams
-    * clean_bracket
-
-Requires a minimum of the 'pandas' library, as well as the 'data_integrity' 
-and 'feature_engineering' helper modules, being present in your environment to run.
-"""
-
 import pandas as pd
-from get_curr_year import curr_year
-from data_integrity import season_team_to_coach_tourney_team_dict
-from feature_engineering import create_faves_underdogs, bidirectional_rounds_str_numeric, create_target_variable
+
+from sys import path
+path.append('../..')
+from API.get_curr_year import curr_year
+from API.preprocess.data_integrity import season_team_to_coach_tourney_team_dict
+from API.preprocess.feature_engineering import create_faves_underdogs, bidirectional_rounds_str_numeric, create_target_variable
 
 
 def clean_basic_stats(df):

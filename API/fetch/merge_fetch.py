@@ -64,6 +64,7 @@ playin_regions_list = [
      'washington',
 ]
 
+
 def merge_raw_tourney_games(year, seeds_list, teams_scores_list, rounds_list):
     # Convert play-in data lists into reshaped arrays so each team's data can be retrieved using the same x-axis index
     seeds_arr = np.array(seeds_list).reshape(len(seeds_list), 1)

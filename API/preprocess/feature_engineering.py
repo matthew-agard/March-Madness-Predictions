@@ -1,5 +1,8 @@
 import pandas as pd
 import numpy as np
+
+from sklearnex import patch_sklearn
+patch_sklearn()
 from sklearn.preprocessing import StandardScaler, OrdinalEncoder
 
 from sys import path

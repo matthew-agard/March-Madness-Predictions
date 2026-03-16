@@ -1,4 +1,7 @@
 import numpy as np
+
+from sklearnex import patch_sklearn
+patch_sklearn()
 from sklearn.naive_bayes import GaussianNB
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC

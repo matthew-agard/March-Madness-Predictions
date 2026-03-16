@@ -1,5 +1,9 @@
 import pandas as pd
 
+# Patch sklearn models for faster bracket_pipeline() execution
+from sklearnex import patch_sklearn
+patch_sklearn()
+
 from sys import path
 path.append('../../')
 from API.fetch.data_fetch import get_team_data, get_coach_rankings_data, get_hist_bracket

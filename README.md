@@ -28,7 +28,6 @@ The purpose of this personal project is to perform supervised classification on 
 # TODO
 - Tasks:
     - Potentially explore use of removed null features in model predictions
-    - Utilize sklearnex for model training optimization
     - Assign release tags
     - Update model_selection parameter sets
     - Implement neural network for model_evaluation

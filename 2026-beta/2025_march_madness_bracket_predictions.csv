@@ -25,7 +25,7 @@ Seed_Favorite,Team_Favorite,Seed_Underdog,Team_Underdog,Round,Underdog_Upset,Win
 4,Texas A&M,13,Yale,First Round,0,Texas A&M
 6,Ole Miss,11,UNC,First Round,1,UNC
 3,Iowa State,14,Lipscomb,First Round,0,Iowa State
-7,Marquette,10,New Mexico,First Round,0,Marquette
+7,Marquette,10,New Mexico,First Round,1,New Mexico
 2,Michigan State,15,Bryant,First Round,0,Michigan State
 1,Florida,16,Norfolk State,First Round,0,Florida
 8,UConn,9,Oklahoma,First Round,0,UConn
@@ -46,7 +46,7 @@ Seed_Favorite,Team_Favorite,Seed_Underdog,Team_Underdog,Round,Underdog_Upset,Win
 1,Auburn,9,Creighton,Second Round,0,Auburn
 4,Texas A&M,5,Michigan,Second Round,1,Michigan
 3,Iowa State,11,UNC,Second Round,1,UNC
-2,Michigan State,7,Marquette,Second Round,0,Michigan State
+2,Michigan State,10,New Mexico,Second Round,0,Michigan State
 1,Florida,8,UConn,Second Round,0,Florida
 4,Maryland,12,Colorado State,Second Round,0,Maryland
 3,Texas Tech,6,Missouri,Second Round,0,Texas Tech

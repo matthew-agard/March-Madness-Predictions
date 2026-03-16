@@ -3,6 +3,7 @@ numpy
 lxml
 matplotlib
 scikit-learn
+scikit-learn-intelex
 requests
 bs4
 xgboost

@@ -1,8 +1,11 @@
 import pandas as pd
 import numpy as np
+from xgboost import DMatrix
+
+from sklearnex import patch_sklearn
+patch_sklearn()
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.metrics import accuracy_score, classification_report
-from xgboost import DMatrix
 
 from sys import path
 path.append('../../')

@@ -5,6 +5,7 @@ path.append('../..')
 from API.get_curr_year import curr_year
 from API.fetch.merge_fetch import ratings_team_to_coach_team_dict, playin_regions_list, merge_raw_tourney_games
 from API.fetch.web_scraper_types import bs4_web_scrape, pandas_web_scrape
+from API.preprocess.data_integrity import season_team_to_coach_team_dict
 
 
 def get_team_data(url, attrs, header=1):
@@ -237,7 +238,14 @@ def get_hist_bracket(year):
     tourney_df = get_tourney_matchups(year)
 
     full_tourney_df = pd.concat([playin_df, tourney_df], ignore_index=True)
+    # Some tournament school names will deviate from convention and match the 'School' column of season stats
+    # rather than the 'Coach_Team' column of coach rankings data.
+    # Use the data integrity dictionary to update the tournament school names for dataframe merging
+    full_tourney_df['Team'].replace(season_team_to_coach_team_dict, inplace=True)
+    full_tourney_df['Team.1'].replace(season_team_to_coach_team_dict, inplace=True)
+
     return full_tourney_df
+
 
 def get_current_bracket():
     """Fetch current tournament bracket matchups

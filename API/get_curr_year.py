@@ -1,1 +1,1 @@
-curr_year = 2025
+curr_year = 2026

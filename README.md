@@ -29,6 +29,7 @@ The purpose of this personal project is to perform supervised classification on 
 - Tasks:
     - Potentially explore use of removed null features in model predictions
     - Assign release tags
+    - Implement dynamic data integrity (check set() intersection and apply missing schools)
     - Update model_selection parameter sets
     - Implement neural network for model_evaluation
 - Metrics:

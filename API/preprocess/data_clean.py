@@ -3,7 +3,7 @@ import pandas as pd
 from sys import path
 path.append('../..')
 from API.get_curr_year import curr_year
-from API.preprocess.data_integrity import season_team_to_coach_tourney_team_dict
+from API.preprocess.data_integrity import season_team_to_coach_team_dict, coach_team_to_mm_team_dict
 from API.preprocess.feature_engineering import create_faves_underdogs, bidirectional_rounds_str_numeric, create_target_variable
 
 
@@ -95,7 +95,7 @@ def clean_merged_season_stats(year, all_season_df):
 
     # Change team names when necessary to ensure successful merging with tournament matchups
     if (year == curr_year):
-        all_season_df['School'].replace(season_team_to_coach_tourney_team_dict, inplace=True)
+        all_season_df['School'].replace(season_team_to_coach_team_dict, inplace=True)
 
     return all_season_df
 
@@ -115,6 +115,8 @@ def clean_tourney_data(mm_df, season_df):
     mm_df : DataFrame
         Cleaned tournament matchup dataset, ready for merging with regular season stats data
     """
+    # Replace season data team names with bracket team names
+    season_df['School'].replace(coach_team_to_mm_team_dict, inplace=True)
 
     # Transform team listings into favorite-underdog matchups (using seeds & regular season record)
     faves_unds = create_faves_underdogs(mm_df, season_df)

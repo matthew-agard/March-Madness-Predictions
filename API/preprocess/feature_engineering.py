@@ -63,7 +63,7 @@ def create_faves_underdogs(mm_df, season_df):
                     underdogs.append(team_arr)
                     faves.append(team1_arr)
             except TypeError:
-                print(season_df['School'], "\t", data['Team'], "\t", data['Team.1'])
+                print(season_df['School'].values, "\t", data['Team'], "\t", data['Team.1'], "\t", data['Year'])
                 continue
 
     # Return favorite-underdogs arrays as a single dictionary, referenced by their corresponding key

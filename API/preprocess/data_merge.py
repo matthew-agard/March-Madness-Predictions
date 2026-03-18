@@ -2,8 +2,7 @@ import pandas as pd
 
 from sys import path
 path.append('../..')
-from API.get_curr_year import curr_year
-from API.preprocess.data_integrity import season_team_to_coach_tourney_team_dict, coach_team_to_mm_team_dict
+from API.preprocess.data_integrity import season_team_to_coach_team_dict
 
 
 def merge_clean_team_stats(basic_df, adv_df):
@@ -47,7 +46,7 @@ def merge_clean_coaches_rankings(stats_df, coaches_rankings_df):
         Newly-merged DataFrame of a teams' regular season stats, regular season ranking, and coach performance
     """
     # Change team names accordingly to ensure successful merging with team stats
-    stats_df['School'].replace(season_team_to_coach_tourney_team_dict, inplace=True)
+    stats_df['School'].replace(season_team_to_coach_team_dict, inplace=True)
 
     # Merge on the school name
     all_season_stats_df = pd.merge(stats_df, coaches_rankings_df,
@@ -72,16 +71,12 @@ def merge_clean_tourney_games(year, mm_df, all_season_df):
     -------
     all_data_df : DataFrame
         Completed dataset
-    """
-    # Replace current team names with current year's bracket team names
-    if year == curr_year:
-        all_season_df['School'].replace(season_team_to_coach_tourney_team_dict, inplace=True)
+    """  
     # Caveat on 2011 tourney year in which applying the name changes to UAB would cause data loss
-    else:
-        if (not mm_df['Team_Favorite'].str.contains('UAB').any() 
-            and not mm_df['Team_Underdog'].str.contains('UAB').any()):
-            # Change team names accordingly to ensure successful merging with team stats
-            all_season_df['School'].replace(coach_team_to_mm_team_dict, inplace=True)
+    if (year == 2011 and not mm_df['Team_Favorite'].str.contains('UAB').any() 
+        and not mm_df['Team_Underdog'].str.contains('UAB').any()):
+        # Change team names accordingly to ensure successful merging with team stats
+        all_season_df['School'].replace({'UAB': 'Alabama-Birmingham'}, inplace=True)
 
     # Merge favorites' season data onto tournament matchups DataFrame
     favorites_data_df = pd.merge(mm_df, all_season_df, 

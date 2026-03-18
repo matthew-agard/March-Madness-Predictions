@@ -1,4 +1,4 @@
-season_team_to_coach_tourney_team_dict = {
+season_team_to_coach_team_dict = {
      'Brigham Young': 'BYU',
      'Cal State Long Beach': 'Long Beach State',
      'Central Connecticut State': 'Central Connecticut',
@@ -45,7 +45,8 @@ season_team_to_coach_tourney_team_dict = {
 }
 
 coach_team_to_mm_team_dict = {
-     'UAB': 'Alabama-Birmingham',
+     # **season_team_to_coach_team_dict,
+     'Prairie View': 'Prairie View A&M',
 }
 
 rounds_str_to_numeric = {

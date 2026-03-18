@@ -78,22 +78,22 @@ def init_rf():
     """
     rf = RandomForestClassifier()
     rf_params = {
-        'n_estimators': np.arange(100, 201, 25),
-        'criterion': ['entropy'],
-        'min_samples_split': [2**i for i in range(3, 7)],
-        'min_samples_leaf': [2**i for i in range(1, 5)],
+        'n_estimators': np.arange(25, 201, 25),
+        'criterion': ['gini', 'entropy', 'log_loss'],
+        'min_samples_split': [2**i for i in range(4, 7)],
+        'min_samples_leaf': [2**i for i in range(2, 5)],
         'random_state': [42],
     }
 
-    return ['Random', rf, rf_params]
+    return ['Grid', rf, rf_params]
 
 
 def init_xgb():
     xgb = XGBClassifier()
     xgb_params = {
-        'n_estimators': np.arange(150, 301, 25),
+        'n_estimators': np.arange(25, 201, 25),
         'learning_rate': [0.01, 0.025, 0.05, 0.1],
-        'subsample': np.arange(0.4, 0.7, 0.1),
+        'subsample': np.arange(0.1, 0.4, 0.7),
         'tree_method': ['gpu_hist'],
         'sampling_method': ['gradient_based'],
         'lambda': [100],

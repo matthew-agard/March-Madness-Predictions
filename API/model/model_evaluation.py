@@ -4,7 +4,7 @@ from xgboost import DMatrix
 
 from sklearnex import patch_sklearn
 patch_sklearn()
-from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
+from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score, classification_report
 
 from sys import path
@@ -32,18 +32,15 @@ def evaluate_cv_models(cv_models, X, y):
     # Define CV search parameters and DataFrame to store results
     model_performance = pd.DataFrame(columns=['Best_Mean_Accuracy', 'Best_Mean_Accuracy_Std'])
     cross_vals = 4
-    rand_iters = 50
 
     for model, params in cv_models.items():
         # Determine which CV search to perform, populate parameters accordingly
         if params[0] == 'Grid':
             model_cv = GridSearchCV(estimator=params[1], param_grid=params[2], n_jobs=-2,
                                         cv=cross_vals, scoring='accuracy')
-        elif params[0] == 'Random':
-            model_cv = RandomizedSearchCV(estimator=params[1], param_distributions=params[2], n_iter=rand_iters, 
-                                            n_jobs=-2, cv=cross_vals, scoring='accuracy', random_state=42)
         else:
-            model_cv = XGBoostCV(iterations=rand_iters, params=params[2], cross_vals=cross_vals, metrics=['error'])
+            num_iters = 75
+            model_cv = XGBoostCV(iterations=num_iters, params=params[2], cross_vals=cross_vals, metrics=['error'])
         
         # Fit data to model
         model_cv.fit(X, y)

@@ -264,19 +264,27 @@ def get_current_bracket():
     for i, matchups in enumerate(matchup_regions):
         # Get all teams' seeds
         seeds = matchups.find_all("span")
-        seeds_list = [data.text for data in seeds if ("at ") not in data.text][:-1]
-        # Clean First Four team seeds; will need to be manually added to CSV
-        seeds_list = [int(seed) if seed and seed.lower() != 'tbd' else 0 for seed in seeds_list]
+        seeds_list = [data.text for data in seeds if ("at ") not in data.text and data.text not in ['', 'tbd']]
+        # Append play-in seed placeholders to end of list
+        playin_seeds = matchups.find_all("span", attrs={"class": "note"})
+        seeds_list += [data.text for data in playin_seeds]
+        # Clean team seeds; will need to be manually add First Four team matchups to CSV
+        seeds_list = [int(seed) if seed.lower() != 'tbd' else 0 for seed in seeds_list]
         
         # Get all teams' names
         teams = matchups.find_all("a")
-        teams_list = [data.text for data in teams if ("at ") not in data.text and not data.text.isdigit()][:-1]
-        # Clean First Four team names; will need to be manually added to CSV
+        teams_list = [data.text for data in teams if ("at ") not in data.text and not data.text.isdigit()]
+        # Append play-in team placeholders to end of list
+        playin_teams = matchups.find_all("em")
+        teams_list += [data.text for data in playin_teams]
+        # Clean team names; will need to be manually add First Four team matchups to CSV
         teams_list = [team if team not in ['Play-In', 'tbd'] else None for team in teams_list]
 
         # Read team matchups into dataframe
         for j in range(0, len(teams_list), 2):
             current_bracket.loc[(i*len(teams_list)) + j] = [seeds_list[j], teams_list[j], seeds_list[j+1], teams_list[j+1]]
+        # Reset team matchups index for each region
+        j = 0
                 
     current_bracket.index = range(len(current_bracket))
     return current_bracket
